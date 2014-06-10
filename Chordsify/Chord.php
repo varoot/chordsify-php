@@ -46,9 +46,13 @@ class Chord extends Text
 
 	public function html_before(array $options = NULL)
 	{
-		return Config::tag_open('chordAnchor').Config::tag_open('chord', array(
-			Config::$data_attr['chord']=>Key::value($this->main_root->root)
-		));
+		$attr = array();
+		if ($this->main_root)
+		{
+			$attr[Config::$data_attr['chord']] = Key::value($this->main_root->root);
+		}
+
+		return Config::tag_open('chordAnchor').Config::tag_open('chord', $attr);
 	}
 	
 	public function html_after(array $options = NULL)

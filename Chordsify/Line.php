@@ -5,7 +5,7 @@ class Line extends Text
 {
 	public function parse($raw = '', array $options = NULL)
 	{
-		preg_match_all('/\S*(\[[^\]]\]\S*)*\s*/', trim($raw), $matches);
+		preg_match_all('/[^\s\[\]]*(\[[^\]]*\][^\s\[\]]*)*\s*/', trim($raw), $matches);
 		
 		foreach ($matches[0] as $word)
 		{
