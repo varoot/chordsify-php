@@ -71,6 +71,12 @@ class Paragraph extends Text
 	public function text(array $options = NULL)
 	{
 		$output = parent::text($options);
+
+		if (trim($output) == '')
+		{
+			// Prevent returning an empty paragraph
+			return '';
+		}
 		
 		if ( ! isset($options['collapse']) or ! $options['collapse'])
 			return $output;

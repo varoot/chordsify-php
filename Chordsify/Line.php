@@ -20,6 +20,19 @@ class Line extends Text
 		return "\n";
 	}
 
+	public function text(array $options = NULL)
+	{
+		$output = parent::text($options);
+		
+		if (trim($output) == '')
+		{
+			// Prevent returning an empty line
+			return '';
+		}
+
+		return $output;
+	}
+
 	public function html_before(array $options = NULL)
 	{
 		return Config::tag_open('line');
