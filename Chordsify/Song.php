@@ -4,6 +4,7 @@ namespace Chordsify;
 class Song extends Text
 {
 	protected $_original_key;
+	public $title;
 
 	public function parse($raw = '', array $options = NULL)
 	{
@@ -48,6 +49,11 @@ class Song extends Text
 		return parent::transpose($target_key);
 	}
 
+	public function sections()
+	{
+		return $this->children;
+	}
+
 	function __construct($raw = '', array $options = NULL)
 	{
 		if (isset($options['original_key']))
@@ -60,6 +66,7 @@ class Song extends Text
 		}
 
 		$this->_original_key = new Key($o_key);
+		$this->title = @$options['title'];
 		parent::__construct($raw, $options);
 	}
 }
