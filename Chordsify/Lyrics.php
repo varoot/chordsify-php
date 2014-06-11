@@ -11,9 +11,22 @@ class Lyrics extends Text
 		return $this;
 	}
 
+	protected function formatted_content()
+	{
+		$content = $this->content;
+		$content = str_replace('\'', '’', $content);
+
+		return $content;
+	}
+
 	public function text(array $options = NULL)
 	{
-		return $this->content;
+		if (isset($options['formatted']) and $options['formatted'] == FALSE)
+		{
+			return $this->content;
+		}
+
+		return $this->formatted_content();
 	}
 
 	public function html(array $options = NULL)
@@ -23,7 +36,14 @@ class Lyrics extends Text
 			return ' ';
 
 		// Styling text
-		$content = str_replace('\'', '’', $this->content);
+		if (isset($options['formatted']) and $options['formatted'] == FALSE)
+		{
+			$content = $this->content;
+		}
+		else
+		{
+			$content = $this->formatted_content();
+		}
 
 		return Config::tag('lyrics', $content);
 	}
