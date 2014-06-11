@@ -3,8 +3,8 @@ namespace Chordsify;
 
 class Section extends Text
 {
-	protected $type = '';
-	protected $number = 0;
+	public $type = '';
+	public $number = 0;
 
 	public function parse($raw = '', array $options = NULL)
 	{
