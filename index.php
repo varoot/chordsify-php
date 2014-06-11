@@ -3,35 +3,9 @@ function __autoload($class_name) {
     include $class_name.'.php';
 }
 
-$song = new Chordsify\Song(<<<EOD
-	[verse 1]
-	[A] Promise maker, promise keeper
-	[F#m]You finish wh[D]at You begin [A]
-	[A] Our provision through the desert
-	[F#m]You see it throu[D]gh 'til the end [A]
-	[F#m]You see it throu[D]gh 'til the end [A]
+include 'vendor/autoload.php';
 
-	[chorus]
-	[A] The Lord our God [F#m]is ever [D] faithful [A]
-	Never changing [F#m] through the [D]ages [A]
-	From this darkness [F#m] You will le[D]ad us [A]
-	And forever we will [F#m]say
-	You're the [D]Lord our G[A]od
-
-	[verse 2]
-	In the silence, in the waiting
-	Still we can know You are good
-	All Your plans are for Your glory
-	Yes, we can know You are good
-	Yes, we can know You are good
-
-	[bridge]
-	[A]We won't move without You
-	[F#m]We won't mo[D]ve without You [A]
-	You're the light of all and [F#m]all that we nee[D]d
-EOD
-, array('original_key'=>'A'));
-
+$song = new Chordsify\Song(file_get_contents('Your Presence is Heaven.txt'), array('original_key'=>'A'));
 ?>
 <!DOCTYPE html>
 <html>
