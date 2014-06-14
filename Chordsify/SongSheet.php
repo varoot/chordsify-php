@@ -5,7 +5,7 @@ class SongSheet
 {
 	public $songs = array();
 	public $pdf;
-	public $debug = TRUE;
+	public $debug = FALSE;
 
 	protected $page_w;          // Page width
 	protected $page_h;          // Page height
@@ -209,7 +209,9 @@ class SongSheet
 	{
 		$this->set_font_for('title');
 		$this->write_line($song->title);
-		foreach ($song->sections() as $section)
+
+		$sections = $song->sections();
+		foreach ($sections as $i => $section)
 		{
 			$lyrics = $section->text(array('collapse'=>true, 'chords'=>false, 'sections'=>false));
 			$this->set_font_for('lyrics', $section->type);
@@ -217,6 +219,14 @@ class SongSheet
 			$lines = explode("\n", $lyrics);
 			array_pop($lines);
 
+			if ($i == count($sections)-1)
+			{
+				// Remove blank line at the end of the song
+				array_pop($lines);
+			}
+
+			// Make sure the lines in the same section stays together in the same column
+			// This shouldn't be needed in normal song sheet because each column should have enough space for the songs
 			if ($this->line + count($lines) >= $this->max_lines)
 			{
 				$this->next_column();
@@ -224,6 +234,7 @@ class SongSheet
 
 			foreach ($lines as $line)
 			{
+				// This is needed when copying PDF text to clipboard
 				if ($line == '')
 				{
 					$line = " ";
@@ -436,7 +447,6 @@ class SongSheet
 		$print_songs = $this->pack_songs();
 
 		$this->add_page();
-		$this->line = 10;
 
 		foreach ($print_songs as $col => $col_info)
 		{
@@ -447,10 +457,16 @@ class SongSheet
 			
 			$this->line = $col_info['offset'];
 			
-			foreach ($col_info['songs'] as $song)
+			for ($i = 0; $i < count($col_info['songs']); $i++)
 			{
-				$this->write_lyrics($song);
-				$this->write_line(' ');
+				$this->write_lyrics($col_info['songs'][$i]);
+
+				if ($i < count($col_info['songs'])-1)
+				{
+					// Space between songs
+					$this->write_line(' ');
+					$this->write_line(' ');
+				}
 			}
 		}
 	}
