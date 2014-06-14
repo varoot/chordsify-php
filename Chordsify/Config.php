@@ -16,7 +16,7 @@ class Config
 	public static $pdf_fonts = array(
 		'lyrics'        => 'PTF55F.ttf',
 		'lyrics.chorus' => 'PTF56F.ttf',
-		'title'         => 'helveticaB',
+		'title'         => 'PTS75F.ttf',
 	);
 	public static $pdf_text_sizes = array(
 		'lyrics'        => 9,
