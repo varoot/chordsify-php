@@ -10,9 +10,12 @@ class Config
 	public static $font_dir = 'fonts/';
 	public static $pdf_columns = 2;
 	public static $pdf_column_width = 230;
-	public static $pdf_margin = 36;
+	public static $pdf_copies = 'auto'; /* For auto: 2 copies for 1 and 2 columns, 1 for 3+ */
 	public static $pdf_line_height = 12;
 	public static $pdf_line_offset = 9; /* Offset for baseline */
+	public static $pdf_margin = 36;
+	public static $pdf_size = 'Letter'; // Default size for PDF
+
 	public static $pdf_fonts = array(
 		'lyrics'        => 'PTF55F.ttf',
 		'lyrics.chorus' => 'PTF56F.ttf',

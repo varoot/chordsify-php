@@ -7,6 +7,8 @@ class SongSheet
 	public $pdf;
 	public $debug = FALSE;
 
+	protected $size;            // Page size
+	protected $copies;          // Number of copies
 	protected $page_w;          // Page width
 	protected $page_h;          // Page height
 	protected $margin_top;      // Top margin
@@ -100,15 +102,14 @@ class SongSheet
 		return $this;
 	}
 
-	function __construct($size = 'Letter', $columns = NULL)
+	function __construct(array $options = NULL)
 	{
-		if (empty($columns))
-		{
-			$columns = Config::$pdf_columns;
-		}
+		$this->size = empty($options['size']) ? Config::$pdf_size : $options['size'];
+		$this->copies = empty($options['copies']) ? Config::$pdf_copies : $options['copies'];
+		$columns = empty($options['columns']) ? Config::$pdf_columns : (int) $options['columns'];
 
 		// Initialize PDF
-		$pdf = new \TCPDF('P', 'pt' /* unit */, $size, true, 'UTF-8', false);
+		$pdf = new \TCPDF('P', 'pt' /* unit */, $this->size, true, 'UTF-8', false);
 
 		// Set up info
 		$pdf->SetCreator(PDF_CREATOR);
@@ -227,7 +228,7 @@ class SongSheet
 
 			// Make sure the lines in the same section stays together in the same column
 			// This shouldn't be needed in normal song sheet because each column should have enough space for the songs
-			if ($this->line + count($lines) >= $this->max_lines)
+			if ($this->line + count($lines) > $this->max_lines)
 			{
 				$this->next_column();
 			}
@@ -445,9 +446,25 @@ class SongSheet
 	protected function generate()
 	{
 		$print_songs = $this->pack_songs();
+		$columns = count($print_songs);
+
+		// Calculate auto copies
+		// 2 copies for results with 1-2 columns
+		if ($this->copies == 'auto')
+		{
+			$this->copies = $columns < 3 ? 2 : 1;
+		}
+
+		// Duplicate columns for single column result
+		if ($columns == 1 and $this->copies > 1)
+		{
+			while (count($print_songs) < $this->copies)
+			{
+				$print_songs[] = $print_songs[0];
+			}
+		}
 
 		$this->add_page();
-
 		foreach ($print_songs as $col => $col_info)
 		{
 			if ($col > 0)
@@ -467,6 +484,26 @@ class SongSheet
 					$this->write_line(' ');
 					$this->write_line(' ');
 				}
+			}
+		}
+
+		// Check if it ends on a new blank page, delete this blank page
+		if ($this->line == 0)
+		{
+			$this->pdf->deletePage($this->pdf->PageNo());
+		}
+
+		// Make copies of the page
+		if ($columns > 1 and $this->copies > 1)
+		{
+			$last_page = $this->pdf->PageNo();
+
+			for ($i = 1; $i < $this->copies; $i++)
+			{
+				for ($p = 1; $p <= $last_page; $p++)
+				{
+					$this->pdf->copyPage($p);
+				}				
 			}
 		}
 	}
