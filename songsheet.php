@@ -1,12 +1,7 @@
 <?php
-function __autoload($class_name)
-{
-    include $class_name.'.php';
-}
-
 include 'vendor/autoload.php';
 
-function load_song($title, $key)
+function loadSong($title, $key)
 {
     return new Chordsify\Song(
         file_get_contents('chords/'.$title.'.txt'),
@@ -21,26 +16,26 @@ $sheet = new Chordsify\SongSheet();
 //$sheet->debug = TRUE;
 
 /*
-$sheet->add(load_song('10000 Reasons', 'G'));
-$sheet->add(load_song('How Great Is Our God', 'A'));
-$sheet->add(load_song('I Could Sing of Your Love Forever', 'E'));
-$sheet->add(load_song('Your Presence is Heaven', 'A'));
-$sheet->add(load_song('Once Again', 'G'));
+$sheet->add(loadSong('10000 Reasons', 'G'));
+$sheet->add(loadSong('How Great Is Our God', 'A'));
+$sheet->add(loadSong('I Could Sing of Your Love Forever', 'E'));
+$sheet->add(loadSong('Your Presence is Heaven', 'A'));
+$sheet->add(loadSong('Once Again', 'G'));
 */
 
 /*
-$sheet->add(load_song('All Who Are Thirsty', 'E'));
-$sheet->add(load_song('Come to the Water', 'G'));
-$sheet->add(load_song('Give Thanks', 'G'));
-$sheet->add(load_song('The Wonderful Cross', 'D'));
-$sheet->add(load_song('The Stand', 'E'));
+$sheet->add(loadSong('All Who Are Thirsty', 'E'));
+$sheet->add(loadSong('Come to the Water', 'G'));
+$sheet->add(loadSong('Give Thanks', 'G'));
+$sheet->add(loadSong('The Wonderful Cross', 'D'));
+$sheet->add(loadSong('The Stand', 'E'));
 */
 
-$sheet->add(load_song('Jesus at the Center', 'E'));
-$sheet->add(load_song('All My Fountain', 'D'));
-$sheet->add(load_song('Heart of Worship', 'D'));
-$sheet->add(load_song('Nothing but the Blood', 'E'));
-$sheet->add(load_song('Your Presence is Heaven', 'A'));
+$sheet->add(loadSong('Jesus at the Center', 'E'));
+$sheet->add(loadSong('All My Fountain', 'D'));
+$sheet->add(loadSong('Heart of Worship', 'D'));
+$sheet->add(loadSong('Nothing but the Blood', 'E'));
+$sheet->add(loadSong('Your Presence is Heaven', 'A'));
 
 if ($sheet->debug)
 {
