@@ -61,8 +61,8 @@ class SongSheet
             $font = $this->fonts[$font];
         } else {
             // Load font if exists
-            if (is_file(Config::$font_dir.$font)) {
-                $this->fonts[$font] = $this->pdf->addTTFfont(Config::$font_dir.$font);
+            if (is_file(Config::$font_dir_base.Config::$font_dir.$font)) {
+                $this->fonts[$font] = $this->pdf->addTTFfont(Config::$font_dir_base.Config::$font_dir.$font);
                 $font = $this->fonts[$font];
             }
         }
