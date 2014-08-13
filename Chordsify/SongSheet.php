@@ -13,7 +13,7 @@ class SongSheet
     protected $page_h;          // Page height
     protected $margin_top;      // Top margin
     protected $gutter;          // Column gutter
-    protected $columns;         // Number of columns
+    protected $columns;         // Number of columns per page
     protected $max_lines;       // Number of lines per column
     protected $fonts = array(); // Fonts used
 
@@ -459,5 +459,11 @@ class SongSheet
     {
         $this->generate();
         return $this->pdf->Output($filename, $dest);
+    }
+
+    public function countPages()
+    {
+        $print_songs = $this->packSongs();
+        return ceil(count($print_songs)/$this->columns);
     }
 }
