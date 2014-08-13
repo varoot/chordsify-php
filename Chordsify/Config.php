@@ -9,8 +9,7 @@ class Config
     public static $chars = array('flat'=>'♭', 'sharp'=>'♯');
 
     // PDF for SongSheet
-    public static $font_dir = '/../fonts/';
-    public static $font_dir_base = __DIR__;
+    public static $font_dir = '../fonts/';
     public static $pdf_columns = 2;
     public static $pdf_column_width = 230;
 
