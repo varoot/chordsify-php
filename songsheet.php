@@ -1,20 +1,20 @@
 <?php
 function __autoload($class_name)
 {
-	include $class_name.'.php';
+    include $class_name.'.php';
 }
 
 include 'vendor/autoload.php';
 
 function load_song($title, $key)
 {
-	return new Chordsify\Song(
-		file_get_contents($title.'.txt'),
-		array(
-			'title' => $title,
-			'original_key' => $key
-		)
-	);
+    return new Chordsify\Song(
+        file_get_contents('chords/'.$title.'.txt'),
+        array(
+            'title' => $title,
+            'original_key' => $key
+        )
+    );
 }
 
 $sheet = new Chordsify\SongSheet();
@@ -44,9 +44,9 @@ $sheet->add(load_song('Your Presence is Heaven', 'A'));
 
 if ($sheet->debug)
 {
-	$sheet->pdf_output('F');
+    $sheet->pdfOutput('F');
 }
 else
 {
-	$sheet->pdf_output();
+    $sheet->pdfOutput();
 }

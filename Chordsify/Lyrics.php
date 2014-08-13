@@ -5,7 +5,7 @@ class Lyrics extends Text
 {
 	public $content = '';
 
-	public function parse($raw = '', array $options = NULL)
+	public function parse($raw = '', array $options = null)
 	{
 		$this->content = $raw;
 		return $this;
@@ -19,9 +19,9 @@ class Lyrics extends Text
 		return $content;
 	}
 
-	public function text(array $options = NULL)
+	public function text(array $options = null)
 	{
-		if (isset($options['formatted']) and $options['formatted'] == FALSE)
+		if (isset($options['formatted']) and $options['formatted'] == false)
 		{
 			return $this->content;
 		}
@@ -29,14 +29,14 @@ class Lyrics extends Text
 		return $this->formatted_content();
 	}
 
-	public function html(array $options = NULL)
+	public function html(array $options = null)
 	{
 		if ($this->content === '')
 			// A space is needed for chords to be on top
 			return ' ';
 
 		// Styling text
-		if (isset($options['formatted']) and $options['formatted'] == FALSE)
+		if (isset($options['formatted']) and $options['formatted'] == false)
 		{
 			$content = $this->content;
 		}

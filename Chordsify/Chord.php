@@ -3,60 +3,56 @@ namespace Chordsify;
 
 class Chord extends Text
 {
-	public $main_root;
+    public $main_root;
 
-	public function parse($raw = '', array $options = NULL)
-	{
-		$data = preg_split('/([A-G](?:#|b)?)/', $raw, NULL, PREG_SPLIT_DELIM_CAPTURE);
-		
-		for ($i = 0; $i < count($data); $i+=2)
-		{
-			if ($i == 0 and $data[$i] == '')
-				continue;
+    public function parse($raw = '', array $options = null)
+    {
+        $data = preg_split('/([A-G](?:#|b)?)/', $raw, null, PREG_SPLIT_DELIM_CAPTURE);
 
-			if ($i > 1)
-			{
-				$root = new ChordRoot($data[$i-1], array('song'=>$this->song));
-				if ( ! isset($this->main_root))
-				{
-					$this->main_root = $root;
-				}
+        for ($i = 0; $i < count($data); $i+=2) {
+            if ($i == 0 and $data[$i] == '')
+                continue;
 
-				$this->children[] = $root;
-			}
+            if ($i > 1) {
+                $root = new ChordRoot($data[$i-1], array('song'=>$this->song));
+                if ( ! isset($this->main_root))
+                {
+                    $this->main_root = $root;
+                }
 
-			if ($data[$i] != '')
-			{
-				$this->children[] = new ChordText($data[$i], array('song'=>$this->song));
-			}
-		}
+                $this->children[] = $root;
+            }
 
-		return $this;
-	}
+            if ($data[$i] != '') {
+                $this->children[] = new ChordText($data[$i], array('song'=>$this->song));
+            }
+        }
 
-	public function text_before(array $options = NULL)
-	{
-		return '[';
-	}
+        return $this;
+    }
 
-	public function text_after(array $options = NULL)
-	{
-		return ']';
-	}
+    public function textBefore(array $options = null)
+    {
+        return '[';
+    }
 
-	public function html_before(array $options = NULL)
-	{
-		$attr = array();
-		if ($this->main_root)
-		{
-			$attr[Config::$data_attr['chord']] = Key::value($this->main_root->root);
-		}
+    public function textAfter(array $options = null)
+    {
+        return ']';
+    }
 
-		return Config::tag_open('chordAnchor').Config::tag_open('chord', $attr);
-	}
-	
-	public function html_after(array $options = NULL)
-	{
-		return Config::tag_close('chord').Config::tag_close('chordAnchor');
-	}
+    public function htmlBefore(array $options = null)
+    {
+        $attr = array();
+        if ($this->main_root) {
+            $attr[Config::$data_attr['chord']] = Key::value($this->main_root->root);
+        }
+
+        return Config::tagOpen('chordAnchor').Config::tagOpen('chord', $attr);
+    }
+
+    public function htmlAfter(array $options = null)
+    {
+        return Config::tagClose('chord').Config::tagClose('chordAnchor');
+    }
 }

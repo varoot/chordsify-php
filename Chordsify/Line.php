@@ -3,43 +3,41 @@ namespace Chordsify;
 
 class Line extends Text
 {
-	public function parse($raw = '', array $options = NULL)
-	{
-		preg_match_all('/[^\s\[\]]*(\[[^\]]*\][^\s\[\]]*)*\s*/', trim($raw), $matches);
-		
-		foreach ($matches[0] as $word)
-		{
-			$this->children[] = new Word($word, array('song'=>$this->song));
-		}
+    public function parse($raw = '', array $options = null)
+    {
+        preg_match_all('/[^\s\[\]]*(\[[^\]]*\][^\s\[\]]*)*\s*/', trim($raw), $matches);
 
-		return $this;
-	}
+        foreach ($matches[0] as $word) {
+            $this->children[] = new Word($word, array('song'=>$this->song));
+        }
 
-	protected function text_after(array $options = NULL)
-	{
-		return "\n";
-	}
+        return $this;
+    }
 
-	public function text(array $options = NULL)
-	{
-		$output = parent::text($options);
-		
-		if (trim($output) == '')
-		{
-			// Prevent returning an empty line
-			return '';
-		}
+    protected function textAfter(array $options = null)
+    {
+        return "\n";
+    }
 
-		return $output;
-	}
+    public function text(array $options = null)
+    {
+        $output = parent::text($options);
 
-	public function html_before(array $options = NULL)
-	{
-		return Config::tag_open('line');
-	}
+        if (trim($output) == '') {
+            // Prevent returning an empty line
+            return '';
+        }
 
-	public function html_after(array $options = NULL)
-	{
-		return Config::tag_close('line');
-	}
+        return $output;
+    }
+
+    public function htmlBefore(array $options = null)
+    {
+        return Config::tagOpen('line');
+    }
+
+    public function htmlAfter(array $options = null)
+    {
+        return Config::tagClose('line');
+    }
 }

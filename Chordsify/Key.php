@@ -24,18 +24,17 @@ class Key
 		"Bb" => 10,
 		"B"  => 11
 	);
-	protected $_value = NULL;
+	protected $_value = null;
 
 	public static function value($k)
 	{
 		if (is_null($k))
-			return NULL;
+			return null;
 
 		if (is_numeric($k))
 			return (int) $k % 12;
 
-		if (is_object($k) and get_class($k) == __CLASS__)
-		{
+		if (is_object($k) and get_class($k) == __CLASS__) {
 			return $k->_value;
 		}
 
@@ -45,10 +44,10 @@ class Key
 			return self::$map[$k];
 
 		// Invalid key
-		return NULL;
+		return null;
 	}
 
-	public static function text($value, $flat = FALSE)
+	public static function text($value, $flat = false)
 	{
 		$keys = $flat ? self::$flat_keys : self::$sharp_keys;
 		return $keys[$value];
@@ -62,10 +61,9 @@ class Key
 		return $this;
 	}
 
-	public function relative_to($original_key)
+	public function relativeTo($original_key)
 	{
-		if (is_null($this->_value) or is_null($original_key->_value))
-		{
+		if (is_null($this->_value) or is_null($original_key->_value)) {
 			return $this->_value;
 		}
 

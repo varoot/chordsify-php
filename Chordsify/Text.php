@@ -2,79 +2,76 @@
 namespace Chordsify;
 
 abstract class Text {
-	protected $children = array();
-	protected $song;
+    protected $children = array();
+    protected $song;
 
-	abstract public function parse($raw = '', array $options = NULL);
+    abstract public function parse($raw = '', array $options = null);
 
-	function __construct($raw = '', array $options = NULL) {
-		if (isset($options['song']))
-		{
-			$this->song = $options['song'];
-		}
-		
-		$this->parse($raw, $options);
-	}
+    public function __construct($raw = '', array $options = null)
+    {
+        if (isset($options['song'])) {
+            $this->song = $options['song'];
+        }
 
-	protected function text_before(array $options = NULL)
-	{
-		return '';
-	}
-	
-	protected function text_after(array $options = NULL)
-	{
-		return '';
-	}
-	
-	protected function html_before(array $options = NULL)
-	{
-		return '';
-	}
-	
-	protected function html_after(array $options = NULL)
-	{
-		return '';
-	}
-	
-	public function text(array $options = NULL)
-	{
-		$output = $this->text_before($options);
+        $this->parse($raw, $options);
+    }
 
-		foreach ($this->children as $child)
-		{
-			$output .= $child->text($options);
-		}
+    protected function textBefore(array $options = null)
+    {
+        return '';
+    }
 
-		$output .= $this->text_after($options);
+    protected function textAfter(array $options = null)
+    {
+        return '';
+    }
 
-		return $output;
-	}
+    protected function htmlBefore(array $options = null)
+    {
+        return '';
+    }
 
-	public function html(array $options = NULL)
-	{
-		$output = $this->html_before($options);
+    protected function htmlAfter(array $options = null)
+    {
+        return '';
+    }
 
-		foreach ($this->children as $child)
-		{
-			$output .= $child->html($options);
-		}
+    public function text(array $options = null)
+    {
+        $output = $this->textBefore($options);
 
-		$output .= $this->html_after($options);
+        foreach ($this->children as $child) {
+            $output .= $child->text($options);
+        }
 
-		return $output;
-	}
+        $output .= $this->textAfter($options);
 
-	public function transpose($target_key)
-	{
-		foreach ($this->children as $child)
-		{
-			$child->transpose($target_key);
-		}
-		return $this;
-	}
+        return $output;
+    }
 
-	public function __toString()
-	{
-		return $this->text();
-	}
+    public function html(array $options = null)
+    {
+        $output = $this->htmlBefore($options);
+
+        foreach ($this->children as $child) {
+            $output .= $child->html($options);
+        }
+
+        $output .= $this->htmlAfter($options);
+
+        return $output;
+    }
+
+    public function transpose($target_key)
+    {
+        foreach ($this->children as $child) {
+            $child->transpose($target_key);
+        }
+        return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->text();
+    }
 }
