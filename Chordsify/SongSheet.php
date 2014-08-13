@@ -455,9 +455,9 @@ class SongSheet
         return $this->pdf;
     }
 
-    public function pdfOutput($dest = 'I')
+    public function pdfOutput($dest = 'I', $filename = 'songsheet.pdf')
     {
         $this->generate();
-        return $this->pdf->Output('songsheet.pdf', $dest);
+        return $this->pdf->Output($filename, $dest);
     }
 }
