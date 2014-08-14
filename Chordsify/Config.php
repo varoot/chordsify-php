@@ -1,11 +1,10 @@
 <?php
 namespace Chordsify;
 
+use Symfony\Component\Yaml\Yaml;
+
 class Config
 {
-    const STYLE_CENTER = 0;
-    const STYLE_LEFT   = 1;
-
     public static $sections = array(
         'intro', 'verse', 'prechorus', 'chorus', 'bridge', 'tag'
     );
@@ -19,41 +18,9 @@ class Config
     /* For auto: 2 copies for 1 and 2 columns, 1 for 3+ */
     public static $pdf_copies = 'auto';
 
-    public static $pdf_line_height = 12;
-    public static $pdf_line_offset = 9; /* Offset for baseline */
     public static $pdf_margin = 36;
     public static $pdf_size = 'Letter'; // Default size for PDF
-
-    public static $pdf_styles = array(
-        self::STYLE_CENTER => array(
-            'font' => array(
-                'lyrics'        => 'PTF55F.ttf',
-                'lyrics.chorus' => 'PTF56F.ttf', // Italics
-                'title'         => 'PTS75F.ttf', // Bold
-            ),
-            'text_size' => array(
-                'lyrics'        => 9,
-                'title'         => 12,
-            ),
-            'align' => 'C',
-        ),
-        self::STYLE_LEFT => array(
-            'font' => array(
-                'lyrics'        => 'PTF55F.ttf',
-                'lyrics.chorus' => 'PTF56F.ttf', // Italics
-                'title'         => 'PTS75F.ttf', // Bold
-            ),
-            'text_size' => array(
-                'lyrics'        => 9,
-                'title'         => 12,
-            ),
-            'align' => 'L',
-            'indent' => array(
-                'lyrics.chorus' => 12,
-                'lyrics.bridge' => 12,
-            ),
-        ),
-    );
+    public static $pdf_style = 'center';
 
     // HTML
     public static $classes = array(
@@ -113,5 +80,13 @@ class Config
     public static function tagClose($element)
     {
         return HTML::tagClose(self::$elements[$element]);
+    }
+
+    public static function loadStyle($style_name)
+    {
+        $all_styles = Yaml::parse(__DIR__.'/styles.yaml');
+        if ( ! array_key_exists($style_name, $all_styles))
+            return $all_styles['default'];
+        return array_merge($all_styles['default'], $all_styles[$style_name]);
     }
 }

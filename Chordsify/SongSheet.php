@@ -17,7 +17,7 @@ class SongSheet
     protected $max_lines;       // Number of lines per column
     protected $fonts = array(); // Fonts used
 
-    protected $style = Config::STYLE_CENTER; // printing style
+    protected $styles;          // style will be loaded from yaml
 
     protected $column;          // Current column
     protected $line;            // Current line to draw
@@ -74,32 +74,35 @@ class SongSheet
         return $this;
     }
 
-    protected function getStyleProperty($property, $default, $type, $subtype = '')
+    protected function getStyleProperty($property, $path = '')
     {
-        if (empty(Config::$pdf_styles[$this->style]) or empty(Config::$pdf_styles[$this->style][$property]))
-            return $default;
+        if (isset($this->styles[$property]))
+            $value = $this->styles[$property];
 
-        $arr = Config::$pdf_styles[$this->style][$property];
+        $path = explode('.', $path);
+        $tree = $this->styles;
 
-        if ( ! is_array($arr)) {
-            return $arr;
+        foreach ($path as $level) {
+            if ( ! isset($tree[$level])) {
+                break;
+            }
+
+            $tree = $tree[$level];
+            if (isset($tree[$property])) {
+                $value = $tree[$property];
+            }
         }
 
-        if (array_key_exists($type.'.'.$subtype, $arr)) {
-            return $arr[$type.'.'.$subtype];
-        } elseif (array_key_exists($type, $arr)) {
-            return $arr[$type];
+        if ( ! isset($value)) {
+            trigger_error('Property '.$property.' does not exist');
         }
 
-        return $default;
+        return $value;
     }
 
-    protected function setFontFor($type, $subtype = '')
+    protected function setFontFor($path)
     {
-        $font = $this->getStyleProperty('font', 'helvetica', $type, $subtype);
-        $size = $this->getStyleProperty('text_size', 9, $type, $subtype);
-        $this->setFont($font, $size);
-        return $this;
+        return $this->setFont($this->getStyleProperty('font', $path), $this->getStyleProperty('fontSize', $path));
     }
 
     public function __construct(array $options = null)
@@ -107,10 +110,9 @@ class SongSheet
         $this->size = empty($options['size']) ? Config::$pdf_size : $options['size'];
         $this->copies = empty($options['copies']) ? Config::$pdf_copies : $options['copies'];
         $columns = empty($options['columns']) ? Config::$pdf_columns : (int) $options['columns'];
+        $style = empty($options['style']) ? Config::$pdf_style : $options['style'];
 
-        if (is_int($options['style'])) {
-            $this->style = $options['style'];
-        }
+        $this->styles = Config::loadStyle($style);
 
         // Initialize PDF
         $pdf = new \TCPDF('P', 'pt' /* unit */, $this->size, true, 'UTF-8', false);
@@ -130,14 +132,15 @@ class SongSheet
         $this->page_h = $pdf->getPageHeight();
 
         // Calculate number of lines and actual margin
+        $line_height = $this->getStyleProperty('lineHeight');
         $height = $this->page_h - (2 * Config::$pdf_margin);
-        $this->max_lines = (int) ($height / Config::$pdf_line_height);
-        $this->margin_top = ($this->page_h - ($this->max_lines * Config::$pdf_line_height)) / 2;
+        $this->max_lines = (int) ($height / $line_height);
+        $this->margin_top = ($this->page_h - ($this->max_lines * $line_height)) / 2;
 
         // Set up page
         $pdf->setPrintHeader(false);
         $pdf->setPrintFooter(false);
-        $pdf->setPageOrientation('P', false /* No auto page-break */, $this->margin_top - Config::$pdf_line_offset);
+        $pdf->setPageOrientation('P', false /* No auto page-break */, $this->margin_top - $this->getStyleProperty('lineOffset'));
         $cols = $this->calculateColumns($columns);
 
         // Set up columns
@@ -161,8 +164,8 @@ class SongSheet
 
     protected function lineY()
     {
-        return ($this->line * Config::$pdf_line_height)
-            + Config::$pdf_line_offset
+        return ($this->line * $this->getStyleProperty('lineHeight'))
+            + $this->getStyleProperty('lineOffset')
             + $this->margin_top;
     }
 
@@ -187,38 +190,44 @@ class SongSheet
         }
     }
 
-    protected function writeLine($text, $align = 'C', $indent = 0)
+    protected function writeLine($text, $line_height = NULL, $align = 'C', $indent = 0)
     {
+        if ($line_height === NULL) {
+            $line_height = $this->getStyleProperty('lineHeight');
+        }
+
         $this->pdf->SetY($this->lineY());
         $this->pdf->SetX($this->pdf->GetX()+$indent);
         $this->pdf->Cell(
-            0,                        // width
-            Config::$pdf_line_height, // height
-            $text,                    // text,
-            0,                        // border
-            0,                        // cursor after
-            $align,                   // align
-            false,                    // fill
-            '',                       // link
-            1,                        // stretch
-            true,                     // ignore min-height
-            'L'                       // align cell to font baseline
+            0,            // width
+            $line_height, // height
+            $text,        // text,
+            0,            // border
+            0,            // cursor after
+            $align,       // align
+            false,        // fill
+            '',           // link
+            1,            // stretch
+            true,         // ignore min-height
+            'L'           // align cell to font baseline
         );
         $this->nextLine();
     }
 
     protected function writeLyrics($song)
     {
+        $line_height = $this->getStyleProperty('lineHeight');
+
         $this->setFontFor('title');
-        $this->writeLine($song->title, $this->getStyleProperty('align', 'C', 'title'), $this->getStyleProperty('indent', 0, 'title'));
+        $this->writeLine($song->title, $line_height, $this->getStyleProperty('align', 'title'), $this->getStyleProperty('indent', 'title'));
 
         $sections = $song->sections();
         foreach ($sections as $i => $section) {
             $lyrics = $section->text(array('collapse'=>true, 'chords'=>false, 'sections'=>false));
-            $this->setFontFor('lyrics', $section->type);
+            $this->setFontFor('lyrics.'.$section->type);
 
-            $align = $this->getStyleProperty('align', 'C', 'lyrics', $section->type);
-            $indent = $this->getStyleProperty('indent', 0, 'lyrics', $section->type);
+            $align = $this->getStyleProperty('align', 'lyrics.'.$section->type);
+            $indent = $this->getStyleProperty('indent', 'lyrics.'.$section->type);
 
             $lines = explode("\n", $lyrics);
             array_pop($lines);
@@ -240,7 +249,7 @@ class SongSheet
                     $line = " ";
                 }
 
-                $this->writeLine($line, $align, $indent);
+                $this->writeLine($line, $line_height, $align, $indent);
             }
         }
     }

@@ -1,0 +1,49 @@
+default:
+    align: C
+    font: PTF55F.ttf
+    fontSize: 9
+    indent: 0
+    lineHeight: 12
+    lineOffset: 9 # Offset for baseline
+
+center:
+    align: C
+
+    # per section
+    lyrics:
+        chorus:
+            font: PTF56F.ttf # italics
+    title:
+        font: PTS75F.ttf # bold
+        fontSize: 12
+
+left:
+    align: L
+
+    # per section
+    lyrics:
+        chorus:
+            font: PTF56F.ttf # italics
+            indent: 12
+        bridge:
+            indent: 12
+    title:
+        font: PTS75F.ttf # bold
+        fontSize: 12
+
+smallLeft:
+    align: L
+    fontSize: 7.5
+    lineHeight: 10
+    lineOffset: 7.5
+
+    # per section
+    lyrics:
+        chorus:
+            font: PTF56F.ttf # italics
+            indent: 12
+        bridge:
+            indent: 12
+    title:
+        font: PTS75F.ttf # bold
+        fontSize: 9
