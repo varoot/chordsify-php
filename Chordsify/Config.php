@@ -3,6 +3,9 @@ namespace Chordsify;
 
 class Config
 {
+    const STYLE_CENTER = 0;
+    const STYLE_LEFT   = 1;
+
     public static $sections = array(
         'intro', 'verse', 'prechorus', 'chorus', 'bridge', 'tag'
     );
@@ -21,14 +24,35 @@ class Config
     public static $pdf_margin = 36;
     public static $pdf_size = 'Letter'; // Default size for PDF
 
-    public static $pdf_fonts = array(
-        'lyrics'        => 'PTF55F.ttf',
-        'lyrics.chorus' => 'PTF56F.ttf',
-        'title'         => 'PTS75F.ttf',
-    );
-    public static $pdf_text_sizes = array(
-        'lyrics'        => 9,
-        'title'         => 12,
+    public static $pdf_styles = array(
+        self::STYLE_CENTER => array(
+            'font' => array(
+                'lyrics'        => 'PTF55F.ttf',
+                'lyrics.chorus' => 'PTF56F.ttf', // Italics
+                'title'         => 'PTS75F.ttf', // Bold
+            ),
+            'text_size' => array(
+                'lyrics'        => 9,
+                'title'         => 12,
+            ),
+            'align' => 'C',
+        ),
+        self::STYLE_LEFT => array(
+            'font' => array(
+                'lyrics'        => 'PTF55F.ttf',
+                'lyrics.chorus' => 'PTF56F.ttf', // Italics
+                'title'         => 'PTS75F.ttf', // Bold
+            ),
+            'text_size' => array(
+                'lyrics'        => 9,
+                'title'         => 12,
+            ),
+            'align' => 'L',
+            'indent' => array(
+                'lyrics.chorus' => 12,
+                'lyrics.bridge' => 12,
+            ),
+        ),
     );
 
     // HTML
