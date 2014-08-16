@@ -6,7 +6,7 @@ class ChordRoot extends Unit
     public $root;
     public $relative_root;
 
-    public function parse($raw = '', array $options = null)
+    public function parse($raw = '', array $options = [])
     {
         $this->root = new Key($raw);
         $this->relative_root = $this->root->relativeTo($this->song->originalKey());

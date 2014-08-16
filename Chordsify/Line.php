@@ -8,7 +8,7 @@ class Line extends Unit
         preg_match_all('/[^\s\[\]]*(\[[^\]]*\][^\s\[\]]*)*\s*/', trim($raw), $matches);
 
         foreach ($matches[0] as $word) {
-            $this->children[] = new Word($word, array('song'=>$this->song));
+            $this->children[] = new Word($word, $this);
         }
 
         return $this;

@@ -9,9 +9,9 @@ class Chunk extends Unit
     public function parse($raw = '', array $options = [])
     {
         if ( ! empty($options['chord'])) {
-            $this->chord = new Chord($options['chord']);
+            $this->chord = new Chord($options['chord'], $this);
         }
 
-        $this->lyrics = new Lyrics($raw);
+        $this->lyrics = new Lyrics($raw, $this);
     }
 }

@@ -5,12 +5,23 @@ abstract class Unit {
     protected $children = array();
     protected $song;
 
-    abstract public function parse($raw = '', array $options = null);
+    abstract public function parse($raw = '', array $options = []);
 
-    public function __construct($raw = '', array $options = null)
+    // Note: $parent is optional for Song
+    public function __construct($raw = '', $parent = null, array $options = [])
     {
-        if (isset($options['song'])) {
-            $this->song = $options['song'];
+        if ($parent instanceof Unit) {
+            if ($parent instanceof Song) {
+                $this->song = $parent;
+            } elseif ($parent->song instanceof Song) {
+                $this->song = $parent->song;
+            }
+        } else {
+            if (is_array($parent) and empty($options))
+            {
+                // Assuming parent is skipped
+                $options = $parent;
+            }
         }
 
         $this->parse($raw, $options);
@@ -24,9 +35,11 @@ abstract class Unit {
         return $this;
     }
 
-    public function write($writer)
+    public function write(Writer $writer)
     {
-        $unitName = lcfirst(end(explode('\\', get_class($this))));
+        $unitName = end(explode('\\', get_class($this)));
+        $writer->{'init'.$unitName}($this);
+
         $children = array();
         if ( ! empty($this->children))
         {
@@ -36,12 +49,8 @@ abstract class Unit {
             }
         }
 
+        $unitName = lcfirst($unitName);
         return $writer->$unitName($this, $children);
-    }
-
-    public function song()
-    {
-        return $this->song;
     }
 
     public function __toString()

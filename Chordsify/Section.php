@@ -14,7 +14,7 @@ class Section extends Unit
         $data = array_filter(preg_split('/(\s*\n){2}/', $raw));
 
         foreach ($data as $p) {
-            $this->children[] = new Paragraph(trim($p), array('song'=>$this->song));
+            $this->children[] = new Paragraph(trim($p), $this);
         }
 
         return $this;

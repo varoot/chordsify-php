@@ -1,7 +1,7 @@
 <?php
 namespace Chordsify;
 
-class WriterHTML implements Writer
+class WriterHTML extends Writer
 {
     public $options = [
         'sections'  => true,
@@ -68,7 +68,7 @@ class WriterHTML implements Writer
         );
     }
 
-    public function html_after(array $options = null)
+    public function html_after(array $options = [])
     {
         return Config::tagClose('section');
     }
@@ -121,7 +121,7 @@ class WriterHTML implements Writer
         return self::element(
             'chordRoot',
             $chordRoot->root,
-            [ 'chordRel' => $chordRoot->root->relativeTo($chordRoot->song()->originalKey()) ]
+            [ 'chordRel' => $chordRoot->relative_root ]
         );
     }
 

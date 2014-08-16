@@ -8,14 +8,10 @@ class Song extends Unit
 
     public function parse($raw = '', array $options = [])
     {
-        if (isset($options['original_key'])) {
-            $o_key = $options['original_key'];
-        } else {
-            $o_key = null;
-        }
+        $options = array_merge(['original_key'=>NULL, 'title'=>''], $options);
 
-        $this->original_key = new Key($o_key);
-        $this->title = @$options['title'];
+        $this->original_key = new Key($options['original_key']);
+        $this->title = $options['title'];
 
         $data = preg_split('/^\s*\[\s*('.implode('|', Config::$sections).')\s*(\d*)\s*\]\s*$/m', $raw, null, PREG_SPLIT_DELIM_CAPTURE);
 
@@ -25,11 +21,10 @@ class Song extends Unit
                 continue;
             }
 
-            $this->children[] = new Section($data[$i], array(
-                'song' => $this,
+            $this->children[] = new Section($data[$i], $this, [
                 'type' => $i > 0 ? $data[$i-2] : null,
                 'number' => $i > 0 ? $data[$i-1] : null,
-            ));
+            ]);
         }
 
         return $this;

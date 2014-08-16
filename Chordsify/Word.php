@@ -11,13 +11,13 @@ class Word extends Unit
             if ($i==0 and $data[$i] == '')
                 continue;
 
-            $options = array('song'=>$this->song);
+            $options = [];
 
             if ($i > 0) {
                 $options['chord'] = $data[$i-1];
             }
 
-            $this->children[] = new Chunk($data[$i], $options);
+            $this->children[] = new Chunk($data[$i], $this, $options);
         }
 
         return $this;

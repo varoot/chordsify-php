@@ -1,7 +1,7 @@
 <?php
 namespace Chordsify;
 
-class WriterText implements Writer
+class WriterText extends Writer
 {
     public $options = [
         'sections'  => true,

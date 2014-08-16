@@ -14,7 +14,7 @@ class Paragraph extends Unit
         $data = preg_split('/\n/', $raw);
 
         foreach ($data as $l) {
-            $this->children[] = new Line($l, array('song'=>$this->song));
+            $this->children[] = new Line($l, $this);
         }
 
         return $this;

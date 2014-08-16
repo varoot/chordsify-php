@@ -14,7 +14,7 @@ class Chord extends Unit
                 continue;
 
             if ($i > 1) {
-                $root = new ChordRoot($data[$i-1], array('song'=>$this->song));
+                $root = new ChordRoot($data[$i-1], $this);
                 if ( ! isset($this->main_root))
                 {
                     $this->main_root = $root;
@@ -24,7 +24,7 @@ class Chord extends Unit
             }
 
             if ($data[$i] != '') {
-                $this->children[] = new ChordText($data[$i], array('song'=>$this->song));
+                $this->children[] = new ChordText($data[$i], $this);
             }
         }
 
