@@ -7,16 +7,6 @@
 @lyricsFontPrint: @lyricsFont;
 @chordFontPrint: @chordFont;
 
-body {
-	background: #fefefe;
-	color: #222;
-	font-family: "PT Sans", Helvetica, Arial, sans-serif;
-	// transition: all 1s;
-	@media only screen and (min-width: 720px) {
-		font-size: 20px;
-	}
-}
-
 .chordsify {
 	font-family: @lyricsFont;
 }
@@ -81,7 +71,13 @@ body {
 				letter-spacing: 1px;
 				text-transform: uppercase;
 				-webkit-transform: rotate(-90deg) translate(-100%, 0);
+				   -moz-transform: rotate(-90deg) translate(-100%, 0);
+				    -ms-transform: rotate(-90deg) translate(-100%, 0);
+				        transform: rotate(-90deg) translate(-100%, 0);
 				-webkit-transform-origin: left top;
+				   -moz-transform-origin: left top;
+				    -ms-transform-origin: left top;
+				        transform-origin: left top;
 			}
 		}
 	}
