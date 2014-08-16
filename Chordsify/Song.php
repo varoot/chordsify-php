@@ -1,12 +1,25 @@
 <?php
 namespace Chordsify;
 
-class Song extends Text
+class Song extends Unit
 {
     protected $original_key;
     public $title;
 
-    public function parse($raw = '', array $options = null)
+    function __construct($raw = '', array $options = [])
+    {
+        if (isset($options['original_key'])) {
+            $o_key = $options['original_key'];
+        } else {
+            $o_key = null;
+        }
+
+        $this->original_key = new Key($o_key);
+        $this->title = @$options['title'];
+        parent::__construct($raw, $options);
+    }
+
+    public function parse($raw = '', array $options = [])
     {
         $data = preg_split('/^\s*\[\s*('.implode('|', Config::$sections).')\s*(\d*)\s*\]\s*$/m', $raw, null, PREG_SPLIT_DELIM_CAPTURE);
 
@@ -26,16 +39,6 @@ class Song extends Text
         return $this;
     }
 
-    public function htmlBefore(array $options = null)
-    {
-        return Config::tagOpen('song');
-    }
-
-    public function htmlAfter(array $options = null)
-    {
-        return Config::tagClose('song');
-    }
-
     public function originalKey()
     {
         return $this->original_key;
@@ -47,21 +50,13 @@ class Song extends Text
         return parent::transpose($target_key);
     }
 
-    public function sections()
+    public function text(array $options = [])
     {
-        return $this->children;
+        return $this->write(new WriterText($options));
     }
 
-    function __construct($raw = '', array $options = null)
+    public function html(array $options = [])
     {
-        if (isset($options['original_key'])) {
-            $o_key = $options['original_key'];
-        } else {
-            $o_key = null;
-        }
-
-        $this->original_key = new Key($o_key);
-        $this->title = @$options['title'];
-        parent::__construct($raw, $options);
+        return $this->write(new WriterHTML($options));
     }
 }

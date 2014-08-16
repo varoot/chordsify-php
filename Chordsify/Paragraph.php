@@ -1,11 +1,11 @@
 <?php
 namespace Chordsify;
 
-class Paragraph extends Text
+class Paragraph extends Unit
 {
     public $chord_exists = true;
 
-    public function parse($raw = '', array $options = null)
+    public function parse($raw = '', array $options = [])
     {
         if (strpos($raw, '[') === false) {
             $this->chord_exists = false;
@@ -18,11 +18,6 @@ class Paragraph extends Text
         }
 
         return $this;
-    }
-
-    protected function textAfter(array $options = null)
-    {
-        return "\n";
     }
 
     protected static function findCollapse($lines)
@@ -60,7 +55,7 @@ class Paragraph extends Text
         return array($found_lines, $found_times);
     }
 
-    public function text(array $options = null)
+    public function text(array $options = [])
     {
         $output = parent::text($options);
 
@@ -87,16 +82,5 @@ class Paragraph extends Text
         }
 
         return $output;
-    }
-
-    public function htmlBefore(array $options = null)
-    {
-        $chord_exists = $this->chord_exists ? '' : ' '.Config::$classes['noChords'];
-        return HTML::tagOpen(Config::$elements['paragraph'], array('class'=>Config::$classes['paragraph'].$chord_exists));
-    }
-
-    public function htmlAfter(array $options = null)
-    {
-        return Config::tagClose('paragraph');
     }
 }

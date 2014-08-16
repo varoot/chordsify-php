@@ -1,7 +1,7 @@
 <?php
 namespace Chordsify;
 
-class ChordText extends Text
+class ChordText extends Unit
 {
     public $content = '';
 
@@ -11,13 +11,8 @@ class ChordText extends Text
         return $this;
     }
 
-    public function text(array $options = null)
+    public function write($writer)
     {
-        return $this->content;
-    }
-
-    public function html(array $options = null)
-    {
-        return htmlspecialchars($this->content);
+        return $writer->chordText($this);
     }
 }

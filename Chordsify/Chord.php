@@ -1,11 +1,11 @@
 <?php
 namespace Chordsify;
 
-class Chord extends Text
+class Chord extends Unit
 {
     public $main_root;
 
-    public function parse($raw = '', array $options = null)
+    public function parse($raw = '', array $options = [])
     {
         $data = preg_split('/([A-G](?:#|b)?)/', $raw, null, PREG_SPLIT_DELIM_CAPTURE);
 
@@ -29,30 +29,5 @@ class Chord extends Text
         }
 
         return $this;
-    }
-
-    public function textBefore(array $options = null)
-    {
-        return '[';
-    }
-
-    public function textAfter(array $options = null)
-    {
-        return ']';
-    }
-
-    public function htmlBefore(array $options = null)
-    {
-        $attr = array();
-        if ($this->main_root) {
-            $attr[Config::$data_attr['chord']] = Key::value($this->main_root->root);
-        }
-
-        return Config::tagOpen('chordAnchor').Config::tagOpen('chord', $attr);
-    }
-
-    public function htmlAfter(array $options = null)
-    {
-        return Config::tagClose('chord').Config::tagClose('chordAnchor');
     }
 }

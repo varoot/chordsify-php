@@ -1,7 +1,7 @@
 <?php
 namespace Chordsify;
 
-class ChordRoot extends Text
+class ChordRoot extends Unit
 {
     public $root;
     public $relative_root;
@@ -19,15 +19,8 @@ class ChordRoot extends Text
         return $this;
     }
 
-    public function text(array $options = null)
+    public function write($writer)
     {
-        return $this->root;
-    }
-
-    public function html(array $options = null)
-    {
-        return Config::tag('chordRoot', $this->root, array(
-            Config::$data_attr['chordRel'] => $this->root->relativeTo($this->song->originalKey()),
-        ));
+        return $writer->chordRoot($this);
     }
 }

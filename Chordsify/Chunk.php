@@ -1,7 +1,7 @@
 <?php
 namespace Chordsify;
 
-class Chunk extends Text
+class Chunk extends Unit
 {
     public function parse($raw = '', array $options = null)
     {
@@ -14,33 +14,15 @@ class Chunk extends Text
         return $this;
     }
 
-    public function text(array $options = null)
+    public function write($writer)
     {
-        $output = $this->children['lyrics']->text($options);
-
-        if (isset($options['chords']) and ! $options['chords']) {
-            return $output;
+        if (isset($this->children['chord'])) {
+            $chord = $this->children['chord']->write($writer);
+        } else {
+            $chord = NULL;
         }
 
-        if (@$this->children['chord']) {
-            $output = $this->children['chord']->text($options).$output;
-        }
-
-        return $output;
-    }
-
-    public function html(array $options = null)
-    {
-        $output = $this->children['lyrics']->html($options);
-
-        if (isset($options['chords']) and ! $options['chords']) {
-            return $output;
-        }
-
-        if (@$this->children['chord']) {
-            $output = $this->children['chord']->html($options).$output;
-        }
-
-        return $output;
+        $lyrics = $this->children['lyrics']->write($writer);
+        return $writer->chunk($this, $chord, $lyrics);
     }
 }

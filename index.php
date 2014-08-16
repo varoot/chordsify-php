@@ -18,7 +18,7 @@ $song = new Chordsify\Song(file_get_contents('chords/Your Presence is Heaven.txt
     <h1>Raw</h1>
     <div class="chordsify-raw"><?= $song->text() ?></div>
     <h1>Lyrics Only</h1>
-    <div class="chordsify-raw"><?= $song->text(array('collapse'=>true, 'chords'=>false, 'sections'=>false)) ?></div>
+    <div class="chordsify-raw"><?= $song->text(['collapse'=>true, 'chords'=>false, 'sections'=>false]) ?></div>
     <h1>HTML</h1>
     <?= $song->html() ?>
 </body>
