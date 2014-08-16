@@ -8,6 +8,9 @@ class Section extends Unit
 
     public function parse($raw = '', array $options = [])
     {
+        $this->type = (string) $options['type'];
+        $this->number = (int) $options['number'];
+
         $data = array_filter(preg_split('/(\s*\n){2}/', $raw));
 
         foreach ($data as $p) {
@@ -15,11 +18,5 @@ class Section extends Unit
         }
 
         return $this;
-    }
-
-    public function __construct($raw = '', array $options = []) {
-        $this->type = (string) $options['type'];
-        $this->number = (int) $options['number'];
-        parent::__construct($raw, $options);
     }
 }

@@ -6,7 +6,7 @@ class Song extends Unit
     protected $original_key;
     public $title;
 
-    function __construct($raw = '', array $options = [])
+    public function parse($raw = '', array $options = [])
     {
         if (isset($options['original_key'])) {
             $o_key = $options['original_key'];
@@ -16,11 +16,7 @@ class Song extends Unit
 
         $this->original_key = new Key($o_key);
         $this->title = @$options['title'];
-        parent::__construct($raw, $options);
-    }
 
-    public function parse($raw = '', array $options = [])
-    {
         $data = preg_split('/^\s*\[\s*('.implode('|', Config::$sections).')\s*(\d*)\s*\]\s*$/m', $raw, null, PREG_SPLIT_DELIM_CAPTURE);
 
         for ($i=0; $i < count($data); $i+=3) {
