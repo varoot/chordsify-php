@@ -1,7 +1,7 @@
 <?php
 namespace Chordsify;
 
-class ChordRoot extends Unit
+class ChordRoot extends UnitLeaf
 {
     public $root;
     public $relative_root;
@@ -17,10 +17,5 @@ class ChordRoot extends Unit
     {
         $this->root->set(($target_key + $this->relative_root) % 12);
         return $this;
-    }
-
-    public function write($writer)
-    {
-        return $writer->chordRoot($this);
     }
 }

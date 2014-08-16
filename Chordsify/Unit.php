@@ -17,8 +17,7 @@ abstract class Unit {
                 $this->song = $parent->song;
             }
         } else {
-            if (is_array($parent) and empty($options))
-            {
+            if (is_array($parent) and empty($options)) {
                 // Assuming parent is skipped
                 $options = $parent;
             }
@@ -40,16 +39,18 @@ abstract class Unit {
         $unitName = end(explode('\\', get_class($this)));
         $writer->{'init'.$unitName}($this);
 
-        $children = array();
-        if ( ! empty($this->children))
+        $unitName = lcfirst($unitName);
+        if ($this instanceof UnitLeaf)
         {
-            foreach ($this->children as $child)
-            {
-                $children[] = $child->write($writer);
-            }
+            return $writer->$unitName($this);
         }
 
-        $unitName = lcfirst($unitName);
+        $children = array();
+        foreach ($this->children as $child)
+        {
+            $children[] = $child->write($writer);
+        }
+
         return $writer->$unitName($this, $children);
     }
 

@@ -1,7 +1,7 @@
 <?php
 namespace Chordsify;
 
-class Lyrics extends Unit
+class Lyrics extends UnitLeaf
 {
 	public $content = '';
 
@@ -10,11 +10,6 @@ class Lyrics extends Unit
 		$this->content = $raw;
 		return $this;
 	}
-
-    public function write($writer)
-    {
-        return $writer->lyrics($this);
-    }
 
 	public function formatted_content()
 	{

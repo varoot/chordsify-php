@@ -1,7 +1,7 @@
 <?php
 namespace Chordsify;
 
-class ChordText extends Unit
+class ChordText extends UnitLeaf
 {
     public $content = '';
 
@@ -9,10 +9,5 @@ class ChordText extends Unit
     {
         $this->content = $raw;
         return $this;
-    }
-
-    public function write($writer)
-    {
-        return $writer->chordText($this);
     }
 }
