@@ -1,10 +1,16 @@
+# Values from "default" style is merged to the main style
+# It also guarantees that these values exist
 default:
     align: C
     font: PTF55F.ttf
     fontSize: 9
     indent: 0
+
+    # Note: lineHeight is only read from the root level
     lineHeight: 12
-    lineOffset: 9 # Offset for baseline
+
+    # Offset for baseline
+    lineOffset: 10
 
 center:
     align: C
@@ -25,11 +31,17 @@ left:
         chorus:
             font: PTF56F.ttf # italics
             indent: 12
+            prefixText: "*"
+            prefix:
+                font: PTF55F.ttf
+                fontSize: 9
+                lineOffset: 11
         bridge:
             indent: 12
     title:
         font: PTS75F.ttf # bold
         fontSize: 12
+        lineOffset: 7
 
 smallLeft:
     align: L

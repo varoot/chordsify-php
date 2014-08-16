@@ -12,7 +12,7 @@ function loadSong($title, $key)
     );
 }
 
-$sheet = new Chordsify\SongSheet(['style'=>'left']);
+$sheet = new Chordsify\SongSheet(['style'=>'left', 'size'=>'A4']);
 //$sheet->debug = TRUE;
 
 /*

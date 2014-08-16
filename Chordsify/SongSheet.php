@@ -7,20 +7,74 @@ class SongSheet
     public $pdf;
     public $debug = false;
 
-    protected $size;            // Page size
-    protected $copies;          // Number of copies
+    // * = default value from Config file
+    protected $copies;          // * Number of copies
+    protected $page_size;       // * Size of the paper (e.g. A4 or Letter)
     protected $page_w;          // Page width
     protected $page_h;          // Page height
     protected $margin_top;      // Top margin
     protected $gutter;          // Column gutter
-    protected $columns;         // Number of columns per page
+    protected $columns;         // * Number of columns per page
     protected $max_lines;       // Number of lines per column
     protected $fonts = array(); // Fonts used
 
-    protected $styles;          // style will be loaded from yaml
+    protected $styles;          // * will be loaded from yaml
+    protected $style;           // Current style
+    protected $line_height;     // For grid. This value is read from style
 
     protected $column;          // Current column
     protected $line;            // Current line to draw
+
+    public function __construct(array $options = null)
+    {
+        $this->page_size = empty($options['size']) ? Config::$pdf_size : $options['size'];
+        $this->copies = empty($options['copies']) ? Config::$pdf_copies : $options['copies'];
+        $columns = empty($options['columns']) ? Config::$pdf_columns : (int) $options['columns'];
+        $style = empty($options['style']) ? Config::$pdf_style : $options['style'];
+
+        $this->styles = Config::loadStyle($style);
+        $this->style = $this->getStyle('');
+
+        // Initialize PDF
+        $pdf = new \TCPDF('P', 'pt' /* unit */, $this->page_size, true, 'UTF-8', false);
+
+        // Set up info
+        $pdf->SetCreator(PDF_CREATOR);
+        $pdf->SetAuthor('Psalted.com');
+        $pdf->setLanguageArray(array( // English
+            'a_meta_charset'  => 'UTF-8',
+            'a_meta_dir'      => 'ltr',
+            'a_meta_language' => 'en',
+            'w_page'          => 'page',
+        ));
+
+        // Read page dimensions
+        $this->page_w = $pdf->getPageWidth();
+        $this->page_h = $pdf->getPageHeight();
+
+        // Calculate number of lines and actual margin
+        $this->line_height = $line_height = $this->style['lineHeight'];
+        $height = $this->page_h - (2 * Config::$pdf_margin);
+        $this->max_lines = (int) ($height / $line_height);
+        $this->margin_top = ($this->page_h - ($this->max_lines * $line_height)) / 2;
+
+        // Set up page
+        $pdf->setCellPaddings(0);
+        $pdf->setPrintHeader(false);
+        $pdf->setPrintFooter(false);
+        $pdf->setPageOrientation('P', false /* No auto page-break */, $this->margin_top - $this->styles['lineOffset'] /* root lineOffset*/);
+        $cols = $this->calculateColumns($columns);
+
+        // Set up columns
+        $this->columns = $columns;
+        $pdf->setColumnsArray($cols);
+        $pdf->SetMargins($this->gutter, $this->margin_top);
+
+        // Set up fonts
+        $pdf->setFontSubsetting(false);
+
+        $this->pdf = $pdf;
+    }
 
     public function addPage()
     {
@@ -74,13 +128,10 @@ class SongSheet
         return $this;
     }
 
-    protected function getStyleProperty($property, $path = '')
+    protected function getStyle($path = '')
     {
-        if (isset($this->styles[$property]))
-            $value = $this->styles[$property];
-
         $path = explode('.', $path);
-        $tree = $this->styles;
+        $style = $tree = $this->styles;
 
         foreach ($path as $level) {
             if ( ! isset($tree[$level])) {
@@ -88,70 +139,17 @@ class SongSheet
             }
 
             $tree = $tree[$level];
-            if (isset($tree[$property])) {
-                $value = $tree[$property];
-            }
+            $style = array_merge($style, $tree);
         }
 
-        if ( ! isset($value)) {
-            trigger_error('Property '.$property.' does not exist');
-        }
-
-        return $value;
+        return array_filter($style, function($x) { return ! is_array($x); });
     }
 
-    protected function setFontFor($path)
+    protected function setStyle($path)
     {
-        return $this->setFont($this->getStyleProperty('font', $path), $this->getStyleProperty('fontSize', $path));
-    }
-
-    public function __construct(array $options = null)
-    {
-        $this->size = empty($options['size']) ? Config::$pdf_size : $options['size'];
-        $this->copies = empty($options['copies']) ? Config::$pdf_copies : $options['copies'];
-        $columns = empty($options['columns']) ? Config::$pdf_columns : (int) $options['columns'];
-        $style = empty($options['style']) ? Config::$pdf_style : $options['style'];
-
-        $this->styles = Config::loadStyle($style);
-
-        // Initialize PDF
-        $pdf = new \TCPDF('P', 'pt' /* unit */, $this->size, true, 'UTF-8', false);
-
-        // Set up info
-        $pdf->SetCreator(PDF_CREATOR);
-        $pdf->SetAuthor('Psalted.com');
-        $pdf->setLanguageArray(array( // English
-            'a_meta_charset'  => 'UTF-8',
-            'a_meta_dir'      => 'ltr',
-            'a_meta_language' => 'en',
-            'w_page'          => 'page',
-        ));
-
-        // Read page dimensions
-        $this->page_w = $pdf->getPageWidth();
-        $this->page_h = $pdf->getPageHeight();
-
-        // Calculate number of lines and actual margin
-        $line_height = $this->getStyleProperty('lineHeight');
-        $height = $this->page_h - (2 * Config::$pdf_margin);
-        $this->max_lines = (int) ($height / $line_height);
-        $this->margin_top = ($this->page_h - ($this->max_lines * $line_height)) / 2;
-
-        // Set up page
-        $pdf->setPrintHeader(false);
-        $pdf->setPrintFooter(false);
-        $pdf->setPageOrientation('P', false /* No auto page-break */, $this->margin_top - $this->getStyleProperty('lineOffset'));
-        $cols = $this->calculateColumns($columns);
-
-        // Set up columns
-        $this->columns = $columns;
-        $pdf->setColumnsArray($cols);
-        $pdf->SetMargins($this->gutter, $this->margin_top);
-
-        // Set up fonts
-        $pdf->setFontSubsetting(false);
-
-        $this->pdf = $pdf;
+        $this->style = $this->getStyle($path);
+        $this->setFont($this->style['font'], $this->style['fontSize']);
+        return $this;
     }
 
     public function add($song)
@@ -164,8 +162,8 @@ class SongSheet
 
     protected function lineY()
     {
-        return ($this->line * $this->getStyleProperty('lineHeight'))
-            + $this->getStyleProperty('lineOffset')
+        return ($this->line * $this->line_height)
+            + $this->style['lineOffset']
             + $this->margin_top;
     }
 
@@ -190,44 +188,54 @@ class SongSheet
         }
     }
 
-    protected function writeLine($text, $line_height = NULL, $align = 'C', $indent = 0)
+    protected function writePrefix($prefix)
     {
-        if ($line_height === NULL) {
-            $line_height = $this->getStyleProperty('lineHeight');
-        }
-
+        $w = $this->pdf->GetStringWidth($prefix);
         $this->pdf->SetY($this->lineY());
-        $this->pdf->SetX($this->pdf->GetX()+$indent);
+        $this->pdf->SetX($this->pdf->GetX()+$this->style['indent']-$w);
         $this->pdf->Cell(
-            0,            // width
-            $line_height, // height
-            $text,        // text,
-            0,            // border
-            0,            // cursor after
-            $align,       // align
-            false,        // fill
-            '',           // link
-            1,            // stretch
-            true,         // ignore min-height
-            'L'           // align cell to font baseline
+            $w,                    // width
+            0,                     // height (auto)
+            $prefix,               // text
+            0,                     // border
+            0,                     // cursor after
+            'R',                   // align (prefix always align to the right of left margin)
+            false,                 // fill
+            '',                    // link
+            0,                     // stretch
+            true,                  // ignore min-height
+            'L'                    // align cell to font baseline
+        );
+    }
+
+    protected function writeLine($text)
+    {
+        $this->pdf->SetY($this->lineY());
+        $this->pdf->SetX($this->pdf->GetX()+$this->style['indent']);
+        $this->pdf->Cell(
+            0,                     // width
+            $this->line_height,    // height
+            $text,                 // text
+            0,                     // border
+            0,                     // cursor after
+            $this->style['align'], // align
+            false,                 // fill
+            '',                    // link
+            1,                     // stretch
+            true,                  // ignore min-height
+            'L'                    // align cell to font baseline
         );
         $this->nextLine();
     }
 
     protected function writeLyrics($song)
     {
-        $line_height = $this->getStyleProperty('lineHeight');
-
-        $this->setFontFor('title');
-        $this->writeLine($song->title, $line_height, $this->getStyleProperty('align', 'title'), $this->getStyleProperty('indent', 'title'));
+        $this->setStyle('title');
+        $this->writeLine($song->title);
 
         $sections = $song->sections();
         foreach ($sections as $i => $section) {
             $lyrics = $section->text(array('collapse'=>true, 'chords'=>false, 'sections'=>false));
-            $this->setFontFor('lyrics.'.$section->type);
-
-            $align = $this->getStyleProperty('align', 'lyrics.'.$section->type);
-            $indent = $this->getStyleProperty('indent', 'lyrics.'.$section->type);
 
             $lines = explode("\n", $lyrics);
             array_pop($lines);
@@ -243,13 +251,22 @@ class SongSheet
                 $this->nextColumn();
             }
 
+            $this->setStyle('lyrics.'.$section->type);
+
+            if ( ! empty($this->style['prefixText']))
+            {
+                $this->setStyle('lyrics.'.$section->type.'.prefix');
+                $this->writePrefix($this->style['prefixText']);
+                $this->setStyle('lyrics.'.$section->type);
+            }
+
             foreach ($lines as $line) {
                 // This is needed when copying PDF text to clipboard
                 if ($line == '') {
                     $line = " ";
                 }
 
-                $this->writeLine($line, $line_height, $align, $indent);
+                $this->writeLine($line);
             }
         }
     }
@@ -259,8 +276,9 @@ class SongSheet
     {
         // Horizontal lines
         for ($i=0; $i < $this->max_lines; $i++) {
-            $y = $i * Config::$pdf_line_height + $this->margin_top + Config::$pdf_line_offset;
+            $y = $i * $this->line_height + $this->margin_top;// + $this->styles['lineOffset'] /* root lineOffset*/;
 
+            // Make darker line every tenth line
             if ($i % 10 == 9) {
                 $this->pdf->SetDrawColor(0, 136, 140);
                 //$this->pdf->SetDrawColor(140);
@@ -275,13 +293,13 @@ class SongSheet
             );
         }
 
-        // Vertical lines
+        // Column boxes
         $this->pdf->SetDrawColor(238, 102, 102);
         for ($i=0; $i < $this->columns; $i++) {
             $x = ($i * Config::$pdf_column_width) + ($this->gutter * ($i * 2 + 1));
             $this->pdf->Rect(
                 $x, $this->margin_top,
-                Config::$pdf_column_width, $this->max_lines * Config::$pdf_line_height
+                Config::$pdf_column_width, $this->max_lines * $this->line_height
             );
         }
     }
