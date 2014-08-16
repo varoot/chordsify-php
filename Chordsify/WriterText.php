@@ -32,9 +32,54 @@ class WriterText implements Writer
         return $output;
     }
 
+    protected static function findCollapse($lines)
+    {
+        $max_repeat = $found_lines = $found_times = 0;
+
+        for ($r = (int) (count($lines)/2); $r > 0; $r--) {
+            // Testing for $r-line repeat, e.g. 2-line repeat (AABAAB), 2-line repeat (ABABC), etc.
+            // Find how many times it repeats first $r lines.
+            for ($times = 1; $times < (int) (count($lines) / $r); $times++) {
+                // Check all the lines to make sure it's repeated
+                $repeat = true;
+                for ($i = 0; $i < $r; $i++) {
+                    if ($lines[$i] != $lines[$i+($r*$times)]) {
+                        $repeat = false;
+                        break;
+                    }
+                }
+
+                if ( ! $repeat) {
+                    // Not all lines are repeated
+                    break;
+                }
+            }
+
+            if ($times > 1 and $r*$times >= $max_repeat) {
+                $found_lines = $r;
+                $found_times = $times;
+                $max_repeat = $r*$times;
+            }
+        }
+
+        return array($found_lines, $found_times);
+    }
+
     public function paragraph(Paragraph $paragraph, array $lines)
     {
         $lines = array_filter($lines);
+
+        if (count($lines) == 0 or ! $this->options['collapse'])
+            return implode("\n", $lines);
+
+        list($repeat, $times) = self::findCollapse($lines);
+        $saves = $repeat * ($times-1);
+
+        if ($saves >= $this->options['collapse']) {
+            array_splice($lines, $repeat, $saves);
+            $lines[$repeat-1] .= " (×$times)";
+        }
+
         return implode("\n", $lines);
     }
 
