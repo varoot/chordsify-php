@@ -95,9 +95,8 @@ class WriterHTML extends Writer
 
     public function chunk(Chunk $chunk, $chord, $lyrics)
     {
-        if ( ! $this->options['chords'] or ! $chord) {
+        if ( ! $this->options['chords'] or ! $chord)
             return $lyrics;
-        }
 
         return $chord.$lyrics;
     }
@@ -133,8 +132,7 @@ class WriterHTML extends Writer
     public function lyrics(Lyrics $lyrics)
     {
         if ($lyrics->content === '')
-            // A space is needed for chords to be on top
-            return ' ';
+            return ' '; // A space is needed for chords to be on top
 
         // Styling text
         if ($this->options['formatted'])

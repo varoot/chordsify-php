@@ -3,7 +3,7 @@ namespace Chordsify;
 
 class Chunk extends Unit
 {
-    public function parse($raw = '', array $options = null)
+    public function parse($raw = '', array $options = [])
     {
         $this->children['lyrics'] = new Lyrics($raw, $this);
 

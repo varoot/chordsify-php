@@ -40,10 +40,9 @@ abstract class Unit {
         $writer->{'init'.$unitName}($this);
 
         $unitName = lcfirst($unitName);
+
         if ($this instanceof UnitLeaf)
-        {
             return $writer->$unitName($this);
-        }
 
         $children = array();
         foreach ($this->children as $child)

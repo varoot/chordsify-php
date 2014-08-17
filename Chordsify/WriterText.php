@@ -49,10 +49,9 @@ class WriterText extends Writer
                     }
                 }
 
-                if ( ! $repeat) {
-                    // Not all lines are repeated
+                // Not all lines are repeated
+                if ( ! $repeat)
                     break;
-                }
             }
 
             if ($times > 1 and $r*$times >= $max_repeat) {
@@ -93,9 +92,7 @@ class WriterText extends Writer
         $output = implode($chunks);
 
         if ($this->options['chords'])
-        {
             return $output;
-        }
 
         // Remove the spaces that were only there to separate the chords
         return ltrim($output);
@@ -128,9 +125,7 @@ class WriterText extends Writer
     public function lyrics(Lyrics $lyrics)
     {
         if ($this->options['formatted'])
-        {
             return $lyrics->formatted_content();
-        }
 
         return $lyrics->content;
     }

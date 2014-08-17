@@ -3,9 +3,9 @@ namespace Chordsify;
 
 class Key
 {
-	static public $sharp_keys = array('C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B');
-	static public $flat_keys = array('C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B');
-	static public $map = array(
+	static public $sharp_keys = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+	static public $flat_keys = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+	static public $map = [
 		"C#" => 1,
 		"C"  => 0,
 		"Db" => 1,
@@ -23,7 +23,7 @@ class Key
 		"A"  => 9,
 		"Bb" => 10,
 		"B"  => 11
-	);
+	];
 	protected $_value = null;
 
 	public static function value($k)
@@ -34,9 +34,8 @@ class Key
 		if (is_numeric($k))
 			return (int) $k % 12;
 
-		if (is_object($k) and get_class($k) == __CLASS__) {
+		if (is_object($k) and get_class($k) == __CLASS__)
 			return $k->_value;
-		}
 
 		$k = ucwords(trim($k));
 

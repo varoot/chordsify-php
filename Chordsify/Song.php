@@ -16,10 +16,9 @@ class Song extends Unit
         $data = preg_split('/^\s*\[\s*('.implode('|', Config::$sections).')\s*(\d*)\s*\]\s*$/m', $raw, null, PREG_SPLIT_DELIM_CAPTURE);
 
         for ($i=0; $i < count($data); $i+=3) {
-            if ($i==0 and trim($data[$i]) == '') {
-                // Skip empty section at the beginning
+            // Skip empty section at the beginning
+            if ($i==0 and trim($data[$i]) == '')
                 continue;
-            }
 
             $this->children[] = new Section($data[$i], $this, [
                 'type' => $i > 0 ? $data[$i-2] : null,

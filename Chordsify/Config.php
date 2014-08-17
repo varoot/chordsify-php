@@ -5,10 +5,10 @@ use Symfony\Component\Yaml\Yaml;
 
 class Config
 {
-    public static $sections = array(
+    public static $sections = [
         'intro', 'verse', 'prechorus', 'chorus', 'bridge', 'tag'
-    );
-    public static $chars = array('flat'=>'♭', 'sharp'=>'♯');
+    ];
+    public static $chars = ['flat'=>'♭', 'sharp'=>'♯'];
 
     // PDF for SongSheet
     public static $font_dir = '../fonts/';
