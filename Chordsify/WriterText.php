@@ -114,7 +114,7 @@ class WriterText extends Writer
 
     public function chordRoot(ChordRoot $chordRoot)
     {
-        return $chordRoot->root;
+        return $chordRoot->root->text($this->isFlatScale);
     }
 
     public function chordText(ChordText $chordText)

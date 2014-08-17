@@ -119,7 +119,7 @@ class WriterHTML extends Writer
     {
         return self::element(
             'chordRoot',
-            $chordRoot->root,
+            $chordRoot->root->formatted_text($this->isFlatScale),
             [ 'chordRel' => $chordRoot->relative_root ]
         );
     }

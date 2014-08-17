@@ -3,6 +3,8 @@ namespace Chordsify;
 
 abstract class Writer
 {
+    protected $isFlatScale = false;
+
     abstract public function song(Song $song, array $sections);
     abstract public function section(Section $section, array $paragraphs);
     abstract public function paragraph(Paragraph $paragraph, array $lines);
@@ -14,7 +16,13 @@ abstract class Writer
     abstract public function chordText(ChordText $chordText);
     abstract public function lyrics(Lyrics $lyrics);
 
-    public function initSong(Song $song) {}
+    public function initSong(Song $song) {
+        if ($song->originalKey())
+        {
+            $this->isFlatScale = $song->originalKey()->isFlatScale();
+        }
+    }
+
     public function initSection(Section $section) {}
     public function initParagraph(Paragraph $paragraph) {}
     public function initLine(Line $line) {}

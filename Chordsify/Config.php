@@ -8,7 +8,7 @@ class Config
     public static $sections = [
         'intro', 'verse', 'prechorus', 'chorus', 'bridge', 'tag'
     ];
-    public static $chars = ['flat'=>'♭', 'sharp'=>'♯'];
+    public static $chars = ['b'=>'♭', '#'=>'♯'];
 
     // PDF for SongSheet
     public static $font_dir = '../fonts/';
