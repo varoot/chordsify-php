@@ -74,7 +74,7 @@ class WriterHTML extends Writer
             'paragraph',
             $lines,
             [],
-            $paragraph->chordExists ? [] : ['class' => self::$classes['noChords']]
+            $paragraph->hasChords ? [] : ['class' => self::$classes['noChords']]
         );
     }
 
@@ -90,10 +90,16 @@ class WriterHTML extends Writer
 
     public function chunk(Chunk $chunk, $chord, $lyrics)
     {
-        if ( ! $this->options['chords'] or ! $chord)
+        if ( ! $chord)
             return $lyrics;
 
         return $chord.$lyrics;
+    }
+
+    public function initChord(Chord $chord)
+    {
+        if ( ! $this->options['chords'])
+            return false;
     }
 
     public function chord(Chord $chord, array $chordElements)
