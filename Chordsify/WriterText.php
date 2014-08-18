@@ -101,10 +101,16 @@ class WriterText extends Writer
     public function chunk(Chunk $chunk, $chord, $lyrics)
     {
         $output = '';
-        if ($this->options['chords'] and $chord) {
+        if ($chord) {
             $output = '['.$chord.']';
         }
         return $output.$lyrics;
+    }
+
+    public function initChord(Chord $chord)
+    {
+        if ( ! $this->options['chords'])
+            return false;
     }
 
     public function chord(Chord $chord, array $chordElements)

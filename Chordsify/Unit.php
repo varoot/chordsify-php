@@ -37,7 +37,8 @@ abstract class Unit {
     public function write(Writer $writer)
     {
         $unitName = end(explode('\\', get_class($this)));
-        $writer->{'init'.$unitName}($this);
+        if ($writer->{'init'.$unitName}($this) === false)
+            return NULL;
 
         $unitName = lcfirst($unitName);
 

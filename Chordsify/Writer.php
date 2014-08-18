@@ -16,6 +16,11 @@ abstract class Writer
     abstract public function chordText(ChordText $chordText);
     abstract public function lyrics(Lyrics $lyrics);
 
+    // Init functions
+
+    // If an init function returns false
+    // That element and its child will not be processed
+
     public function initSong(Song $song) {
         if ($song->originalKey())
         {
