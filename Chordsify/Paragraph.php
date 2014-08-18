@@ -3,12 +3,12 @@ namespace Chordsify;
 
 class Paragraph extends Unit
 {
-    public $chord_exists = true;
+    public $chordExists = true;
 
     public function parse($raw = '', array $options = [])
     {
         if (strpos($raw, '[') === false) {
-            $this->chord_exists = false;
+            $this->chordExists = false;
         }
 
         $data = preg_split('/\n/', $raw);

@@ -3,9 +3,9 @@ namespace Chordsify;
 
 class Key
 {
-    static public $sharp_keys = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-    static public $flat_keys = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
-    static public $flat_scales = [0, 1, 3, 5, 8, 10];
+    static public $sharpKeys = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+    static public $flatKeys = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+    static public $flatScales = [0, 1, 3, 5, 8, 10];
     static public $map = [
         "Cb" => 11, "C"  => 0,  "C#" => 1,
         "Db" => 1,  "D"  => 2,  "D#" => 3,
@@ -39,11 +39,11 @@ class Key
 
     public function text($flat = false)
     {
-        $keys = $flat ? self::$flat_keys : self::$sharp_keys;
+        $keys = $flat ? self::$flatKeys : self::$sharpKeys;
         return $keys[$this->value];
     }
 
-    public function formatted_text($flat = false)
+    public function formattedText($flat = false)
     {
         return str_replace(array_keys(Config::$chars), array_values(Config::$chars), $this->text($flat));
     }
@@ -56,20 +56,20 @@ class Key
         return $this;
     }
 
-    public function relativeTo($original_key)
+    public function relativeTo($originalKey)
     {
-        if (is_null($this->value) or is_null($original_key->value)) {
+        if (is_null($this->value) or is_null($originalKey->value)) {
             return $this->value;
         }
 
-        return ((12 + $this->value) - $original_key->value) % 12;
+        return ((12 + $this->value) - $originalKey->value) % 12;
     }
 
     // true  = this is a flat scale
     // false = this is a sharp scale
     public function isFlatScale()
     {
-        return in_array($this->value, self::$flat_scales);
+        return in_array($this->value, self::$flatScales);
     }
 
     function __construct($k)

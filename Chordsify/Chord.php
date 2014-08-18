@@ -3,7 +3,7 @@ namespace Chordsify;
 
 class Chord extends Unit
 {
-    public $main_root;
+    public $mainRoot;
 
     public function parse($raw = '', array $options = [])
     {
@@ -15,8 +15,8 @@ class Chord extends Unit
 
             if ($i > 1) {
                 $root = new ChordRoot($data[$i-1], $this);
-                if ( ! isset($this->main_root)) {
-                    $this->main_root = $root;
+                if ( ! isset($this->mainRoot)) {
+                    $this->mainRoot = $root;
                 }
 
                 $this->children[] = $root;

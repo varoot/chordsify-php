@@ -3,14 +3,14 @@ namespace Chordsify;
 
 class Song extends Unit
 {
-    protected $original_key;
+    protected $originalKey;
     public $title;
 
     public function parse($raw = '', array $options = [])
     {
-        $options = array_merge(['original_key'=>NULL, 'title'=>''], $options);
+        $options = array_merge(['originalKey'=>NULL, 'title'=>''], $options);
 
-        $this->original_key = new Key($options['original_key']);
+        $this->originalKey = new Key($options['originalKey']);
         $this->title = $options['title'];
 
         $data = preg_split('/^\s*\[\s*('.implode('|', Config::$sections).')\s*(\d*)\s*\]\s*$/m', $raw, null, PREG_SPLIT_DELIM_CAPTURE);
@@ -31,13 +31,13 @@ class Song extends Unit
 
     public function originalKey()
     {
-        return $this->original_key;
+        return $this->originalKey;
     }
 
-    public function transpose($target_key)
+    public function transpose($targetKey)
     {
-        $target_key = Key::value($target_key);
-        return parent::transpose($target_key);
+        $targetKey = Key::value($targetKey);
+        return parent::transpose($targetKey);
     }
 
     public function text(array $options = [])

@@ -25,7 +25,7 @@ class WriterHTML extends Writer
         'word'        => 'chordsify-word',
     );
 
-    public static $data_attr = array(
+    public static $dataAttr = array(
         'sectionType'  => 'data-section-type',
         'sectionNum'   => 'data-section-num',
         'chord'        => 'data-chord',
@@ -68,18 +68,13 @@ class WriterHTML extends Writer
         );
     }
 
-    public function html_after(array $options = [])
-    {
-        return Config::tagClose('section');
-    }
-
     public function paragraph(Paragraph $paragraph, array $lines)
     {
         return self::element(
             'paragraph',
             $lines,
             [],
-            $paragraph->chord_exists ? [] : ['class' => self::$classes['noChords']]
+            $paragraph->chordExists ? [] : ['class' => self::$classes['noChords']]
         );
     }
 
@@ -105,8 +100,8 @@ class WriterHTML extends Writer
     {
         $data = [];
 
-        if ($chord->main_root) {
-            $data['chord'] = Key::value($chord->main_root->root);
+        if ($chord->mainRoot) {
+            $data['chord'] = Key::value($chord->mainRoot->root);
         }
 
         return self::element(
@@ -119,8 +114,8 @@ class WriterHTML extends Writer
     {
         return self::element(
             'chordRoot',
-            $chordRoot->root->formatted_text($this->isFlatScale),
-            [ 'chordRel' => $chordRoot->relative_root ]
+            $chordRoot->root->formattedText($this->isFlatScale),
+            [ 'chordRel' => $chordRoot->relativeRoot ]
         );
     }
 
@@ -137,7 +132,7 @@ class WriterHTML extends Writer
         // Styling text
         if ($this->options['formatted'])
         {
-            $content = $lyrics->formatted_content();
+            $content = $lyrics->formattedContent();
         }
         else
         {
@@ -167,7 +162,7 @@ class WriterHTML extends Writer
         return "<$name$attrs>$content</$name>";
     }
 
-    protected static function element($unit, $content, array $data_attr = [], array $attr = [])
+    protected static function element($unit, $content, array $dataAttr = [], array $attr = [])
     {
         if (array_key_exists($unit, self::$classes)) {
             if (! empty($attr['class'])) {
@@ -177,8 +172,8 @@ class WriterHTML extends Writer
             }
         }
 
-        foreach ($data_attr as $key => $value) {
-            $attr[self::$data_attr[$key]] = $value;
+        foreach ($dataAttr as $key => $value) {
+            $attr[self::$dataAttr[$key]] = $value;
         }
 
         return self::tag(self::$elements[$unit], $content, $attr);

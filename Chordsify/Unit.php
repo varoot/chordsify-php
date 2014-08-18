@@ -26,10 +26,10 @@ abstract class Unit {
         $this->parse($raw, $options);
     }
 
-    public function transpose($target_key)
+    public function transpose($targetKey)
     {
         foreach ($this->children as $child) {
-            $child->transpose($target_key);
+            $child->transpose($targetKey);
         }
         return $this;
     }

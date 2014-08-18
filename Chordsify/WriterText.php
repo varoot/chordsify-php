@@ -34,7 +34,7 @@ class WriterText extends Writer
 
     protected static function findCollapse($lines)
     {
-        $max_repeat = $found_lines = $found_times = 0;
+        $maxRepeat = $foundLines = $foundTimes = 0;
 
         for ($r = (int) (count($lines)/2); $r > 0; $r--) {
             // Testing for $r-line repeat, e.g. 2-line repeat (AABAAB), 2-line repeat (ABABC), etc.
@@ -54,14 +54,14 @@ class WriterText extends Writer
                     break;
             }
 
-            if ($times > 1 and $r*$times >= $max_repeat) {
-                $found_lines = $r;
-                $found_times = $times;
-                $max_repeat = $r*$times;
+            if ($times > 1 and $r*$times >= $maxRepeat) {
+                $foundLines = $r;
+                $foundTimes = $times;
+                $maxRepeat = $r*$times;
             }
         }
 
-        return array($found_lines, $found_times);
+        return array($foundLines, $foundTimes);
     }
 
     public function paragraph(Paragraph $paragraph, array $lines)
@@ -125,7 +125,7 @@ class WriterText extends Writer
     public function lyrics(Lyrics $lyrics)
     {
         if ($this->options['formatted'])
-            return $lyrics->formatted_content();
+            return $lyrics->formattedContent();
 
         return $lyrics->content;
     }
