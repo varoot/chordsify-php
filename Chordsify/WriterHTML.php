@@ -3,7 +3,7 @@ namespace Chordsify;
 
 class WriterHTML extends Writer
 {
-    public $options = [
+    protected $options = [
         'sections'  => true,
         'chords'    => true,
         'formatted' => true,  // make curly quotes
@@ -120,7 +120,7 @@ class WriterHTML extends Writer
     {
         return self::element(
             'chordRoot',
-            $chordRoot->root->formattedText($this->isFlatScale),
+            $chordRoot->formattedText(),
             [ 'chordRel' => $chordRoot->relativeRoot ]
         );
     }

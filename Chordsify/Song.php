@@ -4,14 +4,23 @@ namespace Chordsify;
 class Song extends Unit
 {
     protected $originalKey;
+
+    // Title and ID are optional
     public $title;
+    public $id;
+
+    // Object hash
+    public $hash;
 
     public function parse($raw = '', array $options = [])
     {
-        $options = array_merge(['originalKey'=>NULL, 'title'=>''], $options);
+        $this->hash = spl_object_hash($this);
+
+        $options = array_merge(['originalKey'=>NULL, 'title'=>'', 'id'=>''], $options);
 
         $this->originalKey = new Key($options['originalKey']);
         $this->title = $options['title'];
+        $this->id = $options['id'];
 
         $data = preg_split('/^\s*\[\s*('.implode('|', Config::$sections).')\s*(\d*)\s*\]\s*$/m', $raw, null, PREG_SPLIT_DELIM_CAPTURE);
 
@@ -40,9 +49,17 @@ class Song extends Unit
         return parent::transpose($targetKey);
     }
 
-    public function text(array $options = [])
+    public function maxCollapseLevel()
     {
-        return $this->write(new WriterText($options));
+        $level = 0;
+        foreach ($this->children() as $section) {
+            foreach ($section->children() as $paragraph) {
+                if ($paragraph->collapse()->saves > $level) {
+                    $level = $paragraph->collapse()->saves;
+                }
+            }
+        }
+        return $level;
     }
 
     public function html(array $options = [])

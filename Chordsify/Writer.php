@@ -3,8 +3,6 @@ namespace Chordsify;
 
 abstract class Writer
 {
-    protected $isFlatScale = false;
-
     abstract public function song(Song $song, array $sections);
     abstract public function section(Section $section, array $paragraphs);
     abstract public function paragraph(Paragraph $paragraph, array $lines);
@@ -18,16 +16,10 @@ abstract class Writer
 
     // Init functions
 
-    // If an init function returns false
-    // That element and its child will not be processed
+    // If an init function returns false,
+    // that element and its child will not be processed
 
-    public function initSong(Song $song) {
-        if ($song->originalKey())
-        {
-            $this->isFlatScale = $song->originalKey()->isFlatScale();
-        }
-    }
-
+    public function initSong(Song $song) {}
     public function initSection(Section $section) {}
     public function initParagraph(Paragraph $paragraph) {}
     public function initLine(Line $line) {}

@@ -69,6 +69,8 @@ class Key
     // false = this is a sharp scale
     public function isFlatScale()
     {
+        if (is_null($this->value))
+            return false;
         return in_array($this->value, self::$flatScales);
     }
 

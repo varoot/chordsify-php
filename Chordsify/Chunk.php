@@ -3,6 +3,9 @@ namespace Chordsify;
 
 class Chunk extends Unit
 {
+    // mark if this is the last chunk
+    public $last = false;
+
     public function parse($raw = '', array $options = [])
     {
         $this->children['lyrics'] = new Lyrics($raw, $this);

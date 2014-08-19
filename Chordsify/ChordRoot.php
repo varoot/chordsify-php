@@ -18,4 +18,14 @@ class ChordRoot extends UnitLeaf
         $this->root->set(($targetKey + $this->relativeRoot) % 12);
         return $this;
     }
+
+    public function text()
+    {
+        return $this->root->text($this->song->originalKey()->isFlatScale());
+    }
+
+    public function formattedText()
+    {
+        return $this->root->formattedText($this->song->originalKey()->isFlatScale());
+    }
 }

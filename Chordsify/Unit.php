@@ -54,6 +54,16 @@ abstract class Unit {
         return $writer->$unitName($this, $children);
     }
 
+    public function text(array $options = [])
+    {
+        return $this->write(new WriterText($options));
+    }
+
+    public function children()
+    {
+        return $this->children;
+    }
+
     public function __toString()
     {
         return $this->text();
