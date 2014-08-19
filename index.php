@@ -1,7 +1,7 @@
 <?php
 include 'vendor/autoload.php';
 
-$song = new Chordsify\Song(file_get_contents('chords/Your Presence is Heaven.txt'), array('original_key'=>'A'));
+$song = new Chordsify\Song(file_get_contents('chords/Your Presence is Heaven.txt'), array('originalKey'=>'A'));
 ?>
 <!DOCTYPE html>
 <html>
