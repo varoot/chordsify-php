@@ -1,7 +1,29 @@
 # Values from "default" style is merged to the main style
 # It also guarantees that these values exist
 default:
+    # Column width is fixed to help with consistency among A4 and Letter paper size
+    columnWidth: 230
+
+    # Note: pageMargin is only used for top & bottom
+    # Left & right is calculated from column width
+    pageMargin: 36
+
     align: C
+
+    # minimum distance between chords
+    chordMargin: 4
+
+    # distance from lyrics
+    prefixMargin: 3
+
+    chordFont: FreeSansBold.ttf
+    chordFontSize: 7.5
+    chordLineHeight: 9
+
+    # chord's shift is from the bottom
+    # up is negative
+    chordShift: 0
+
     font: PTF55F.ttf
     fontSize: 9
     indent: 0
@@ -11,6 +33,9 @@ default:
 
     # Offset for baseline
     lineOffset: 10
+
+    # Space between songs
+    songSpace: 24
 
 center:
     align: C
@@ -31,31 +56,13 @@ left:
         chorus:
             font: PTF56F.ttf # italics
             indent: 12
-            prefixText: "*"
             prefix:
+                text: "*"
                 font: PTF55F.ttf
-                fontSize: 9
                 lineOffset: 11
         bridge:
-            indent: 12
+            indent: 24
     title:
         font: PTS75F.ttf # bold
         fontSize: 12
-        lineOffset: 7
-
-smallLeft:
-    align: L
-    fontSize: 7.5
-    lineHeight: 10
-    lineOffset: 7.5
-
-    # per section
-    lyrics:
-        chorus:
-            font: PTF56F.ttf # italics
-            indent: 12
-        bridge:
-            indent: 12
-    title:
-        font: PTS75F.ttf # bold
-        fontSize: 9
+        lineOffset: 9
