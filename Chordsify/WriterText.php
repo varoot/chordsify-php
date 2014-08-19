@@ -3,7 +3,7 @@ namespace Chordsify;
 
 class WriterText extends Writer
 {
-    public $options = [
+    protected $options = [
         'sections'  => true,
         'chords'    => true,
         'collapse'  => 0,     // 0 = No collapse, 1 = Always collapse, 2+ = Collapse if saves n lines
@@ -32,38 +32,6 @@ class WriterText extends Writer
         return $output;
     }
 
-    protected static function findCollapse($lines)
-    {
-        $maxRepeat = $foundLines = $foundTimes = 0;
-
-        for ($r = (int) (count($lines)/2); $r > 0; $r--) {
-            // Testing for $r-line repeat, e.g. 2-line repeat (AABAAB), 2-line repeat (ABABC), etc.
-            // Find how many times it repeats first $r lines.
-            for ($times = 1; $times < (int) (count($lines) / $r); $times++) {
-                // Check all the lines to make sure it's repeated
-                $repeat = true;
-                for ($i = 0; $i < $r; $i++) {
-                    if ($lines[$i] != $lines[$i+($r*$times)]) {
-                        $repeat = false;
-                        break;
-                    }
-                }
-
-                // Not all lines are repeated
-                if ( ! $repeat)
-                    break;
-            }
-
-            if ($times > 1 and $r*$times >= $maxRepeat) {
-                $foundLines = $r;
-                $foundTimes = $times;
-                $maxRepeat = $r*$times;
-            }
-        }
-
-        return array($foundLines, $foundTimes);
-    }
-
     public function paragraph(Paragraph $paragraph, array $lines)
     {
         $lines = array_filter($lines);
@@ -71,12 +39,11 @@ class WriterText extends Writer
         if (count($lines) == 0 or ! $this->options['collapse'])
             return implode("\n", $lines);
 
-        list($repeat, $times) = self::findCollapse($lines);
-        $saves = $repeat * ($times-1);
+        $collapse = $paragraph->collapse();
 
-        if ($saves >= $this->options['collapse']) {
-            array_splice($lines, $repeat, $saves);
-            $lines[$repeat-1] .= " (×$times)";
+        if ($collapse->saves >= $this->options['collapse']) {
+            array_splice($lines, $collapse->lines, $collapse->saves);
+            $lines[$collapse->lines-1] .= " (×{$collapse->times})";
         }
 
         return implode("\n", $lines);
@@ -120,7 +87,7 @@ class WriterText extends Writer
 
     public function chordRoot(ChordRoot $chordRoot)
     {
-        return $chordRoot->root->text($this->isFlatScale);
+        return $chordRoot->text();
     }
 
     public function chordText(ChordText $chordText)
