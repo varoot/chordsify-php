@@ -211,6 +211,13 @@ class SongSheet
         }
     }
 
+    protected function countPages()
+    {
+        $fitter = new SongSheetFitter($this->pdf(), $this->bottomY - $this->topY, $this->options);
+        $printSongs = $fitter->fit($this->songs);
+        return (int) ceil(count($printSongs) / $this->options['columns']);
+    }
+
     protected function generate()
     {
         $fitter = new SongSheetFitter($this->pdf(), $this->bottomY - $this->topY, $this->options);
