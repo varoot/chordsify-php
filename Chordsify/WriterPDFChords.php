@@ -194,9 +194,9 @@ class WriterPDFChords extends Writer
                 // for very small space, just ignore the dash
                 if ($len > 1) {
                     // for small space, add more to fit the dash
-                    if ($len < 5) {
-                        $chord += (5 - $len);
-                        $len = 5;
+                    if ($len < 4) {
+                        $chord += (4 - $len);
+                        $len = 4;
                     }
                     // draw dash
                     $this->dash($this->x + $lyrics, $this->y, $len);
@@ -291,7 +291,7 @@ class WriterPDFChords extends Writer
 
         $this->pdf->Line($this->left + $x, $this->top + $y,
             $this->left + $x + $len, $this->top + $y,
-            ['width'=>0.4, 'dash'=>$dash ]);
+            ['width'=>0.3, 'dash'=>$dash ]);
     }
 
     // Note: writeText only writes left-aligned

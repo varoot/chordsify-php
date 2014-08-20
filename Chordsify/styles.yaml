@@ -17,12 +17,12 @@ default:
     prefixMargin: 3
 
     chordFont: FreeSansBold.ttf
-    chordFontSize: 7.5
-    chordLineHeight: 9
+    chordFontSize: 7
+    chordLineHeight: 6
 
     # chord's shift is from the bottom
     # up is negative
-    chordShift: 0
+    chordShift: 1
 
     font: PTF55F.ttf
     fontSize: 9
