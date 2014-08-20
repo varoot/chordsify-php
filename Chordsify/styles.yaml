@@ -39,6 +39,10 @@ default:
 
     idSeparator: ". "
 
+    pagenumber:
+        font: PTS75F.ttf # bold
+        fontSize: 12
+
 center:
     align: C
 

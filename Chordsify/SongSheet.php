@@ -12,6 +12,7 @@ class SongSheet
         'columns'    => 2,        // Columns per page
         'size'       => 'Letter', // Size of the paper (e.g. A4 or Letter)
         'autonumber' => false,
+        'pagenumber' => 'auto',
 
         // Text options
         'chords'    => false,
@@ -93,6 +94,13 @@ class SongSheet
         $this->pdf->selectColumn(0);
         $this->column = 0;
         $this->y = $this->style['pageMargin'];
+
+        if ($this->options['pagenumber']) {
+            $this->writePageNumber();
+        }
+
+        $this->pdf->SetX($this->gutter);
+        $this->pdf->SetY($this->y);
         return $this;
     }
 
@@ -145,61 +153,6 @@ class SongSheet
         return $this;
     }
 
-    // Move Y to next line
-    protected function nextLine()
-    {
-        $this->y += $this->style['lineHeight'];
-    }
-
-    // Check if there's enough space for a line at current Y position
-    protected function checkLine()
-    {
-        if ($this->y + $this->style['lineHeight'] > $this->bottomY) {
-            $this->nextColumn();
-        }
-    }
-
-    public function writePrefix($prefix)
-    {
-        $w = $this->pdf->GetStringWidth($prefix);
-        $this->pdf->SetY($this->lineY());
-        $this->pdf->SetX($this->pdf->GetX()+$this->style['indent']-$w);
-        $this->pdf->Cell(
-            $w,                    // width
-            0,                     // height (auto)
-            $prefix,               // text
-            0,                     // border
-            0,                     // cursor after
-            'R',                   // align (prefix always align to the right of left margin)
-            false,                 // fill
-            '',                    // link
-            0,                     // stretch
-            true,                  // ignore min-height
-            'L'                    // align cell to font baseline
-        );
-    }
-
-    public function writeLine($text)
-    {
-        $this->checkLine();
-        $this->pdf->SetY($this->y + $this->style['lineOffset']);
-        $this->pdf->SetX($this->pdf->GetX() + $this->style['indent']);
-        $this->pdf->Cell(
-            0,                     // width
-            $this->style['lineHeight'], // height
-            $text,                 // text
-            0,                     // border
-            0,                     // cursor after
-            $this->style['align'], // align
-            false,                 // fill
-            '',                    // link
-            1,                     // stretch
-            true,                  // ignore min-height
-            'L'                    // align cell to font baseline
-        );
-        $this->nextLine();
-    }
-
     public function writeSong($song, $options) {
         $colWidth = $this->style['columnWidth'] + ($this->gutter*2);
 
@@ -214,7 +167,7 @@ class SongSheet
             'style'      => $this->options['style'],
         ], $options);
 
-        $this->y = $options['y'] = $this->topY + (int) $options['y'];
+        $options['y'] += $this->topY;
 
         if ($this->options['chords']) {
             $writer = new WriterPDFChords($this->pdf, $options);
@@ -222,6 +175,26 @@ class SongSheet
             $writer = new WriterPDF($this->pdf, $options);
         }
         $song->write($writer);
+    }
+
+    protected function writePageNumber()
+    {
+        $this->setStyle('pagenumber');
+        $this->pdf->Text(
+            /*       x */ $this->pageWidth / 2,
+            /*       y */ $this->bottomY,
+            /*    text */ $this->pdf->PageNo(),
+            /* fstroke */ false,
+            /*   fclip */ false,
+            /*   ffill */ true,
+            /*  border */ 0,
+            /*      ln */ '',
+            /*   align */ 'C',
+            /*    fill */ false,
+            /*    link */ '',
+            /* stretch */ 0,
+                          true // ignore min-height
+        );
     }
 
     // For debugging
@@ -267,6 +240,14 @@ class SongSheet
             $copies = $columns < 3 ? 2 : 1;
         } else {
             $copies = (int) $this->options['copies'];
+        }
+
+        // Auto page-numbering
+        // Enables for 3 or more pages
+        if ($this->options['pagenumber'] === 'auto') {
+            $this->options['pagenumber'] = ($columns > 4);
+        } elseif ($columns <= 2) {
+            $this->options['pagenumber'] = false;
         }
 
         // Duplicate columns for single column result
