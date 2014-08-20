@@ -34,11 +34,11 @@ class SongSheet
 
     public function __construct(array $options = [])
     {
-        $this->options = array_merge($this->options, $options);
-        if (isset($this->debug)) {
+        if (isset($options['debug'])) {
             $this->debug = (bool) $this->debug;
-            unset($this->debug);
+            unset($options['debug']);
         }
+        $this->options = array_merge($this->options, $options);
 
         $this->loadStyleSheet($this->options['style']);
         $this->setStyle('');
