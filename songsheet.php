@@ -12,7 +12,8 @@ function loadSong($title, $key)
     );
 }
 
-$sheet = new Chordsify\SongSheet();
+$sheet = new Chordsify\SongSheet(['chords'=>true, 'autonumber'=>true]);
+
 $sheet->debug = FALSE;
 
 /*

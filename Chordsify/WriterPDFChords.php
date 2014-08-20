@@ -11,6 +11,7 @@ class WriterPDFChords extends Writer
         'condensing' => 100,
         'formatted'  => true,
         'style'      => 'left',
+        'printID'    => true,
     ];
 
     protected $songSheet;
@@ -55,7 +56,13 @@ class WriterPDFChords extends Writer
     {
         $this->pdf->setFontStretching(100);
         $this->setStyle('title');
-        $this->writeCell($this->x, $this->y + $this->style['lineOffset'], $song->title);
+
+        $text = $song->title;
+        if ($this->options['printID'] and ! empty($song->id)) {
+            $text = $song->id.$this->style['idSeparator'].$text;
+        }
+        $this->writeCell($this->x, $this->y + $this->style['lineOffset'], $text);
+
         $this->pdf->setFontStretching($this->options['condensing']);
         $this->moveY($this->style['lineHeight']);
     }

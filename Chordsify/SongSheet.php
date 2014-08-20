@@ -8,10 +8,10 @@ class SongSheet
     public $debug = false;
     protected $options = [
         // For layout
-        'copies'    => 'auto',   // Auto: 2 copies for 1-2 columns, 1 copies for 3+
-        'columns'   => 2,        // Columns per page
-        'size'      => 'Letter', // Size of the paper (e.g. A4 or Letter)
-        'style'     => 'left',
+        'copies'     => 'auto',   // Auto: 2 copies for 1-2 columns, 1 copies for 3+
+        'columns'    => 2,        // Columns per page
+        'size'       => 'Letter', // Size of the paper (e.g. A4 or Letter)
+        'autonumber' => false,
 
         // Text options
         'chords'    => false,
@@ -39,6 +39,9 @@ class SongSheet
             unset($options['debug']);
         }
         $this->options = array_merge($this->options, $options);
+        if (empty($this->options['style'])) {
+            $this->options['style'] = $this->options['chords'] ? 'left' : 'center';
+        }
 
         $this->loadStyleSheet($this->options['style']);
         $this->setStyle('');
@@ -240,6 +243,22 @@ class SongSheet
         $fitter = new SongSheetFitter($this->pdf(), $this->bottomY - $this->topY, $this->options);
         $printSongs = $fitter->fit($this->songs);
 
+        if ($this->options['autonumber']) {
+            $autonumber = $this->options['autonumber'];
+            $i = 1;
+            foreach ($printSongs as $col => $colSongs) {
+                foreach ($colSongs as $songData) {
+                    if (is_callable($autonumber)) {
+                        $id = $autonumber($i, $col, $songData['song']);
+                    } else {
+                        $id = $i;
+                    }
+                    $songData['song']->id = $id;
+                    $i++;
+                }
+            }
+        }
+
         $columns = count($printSongs);
 
         // Calculate auto copies
@@ -279,6 +298,7 @@ class SongSheet
             }
         }
 
+        $this->generated = true;
         return $this;
     }
 
