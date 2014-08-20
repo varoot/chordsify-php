@@ -12,7 +12,7 @@ function loadSong($title, $key)
     );
 }
 
-$sheet = new Chordsify\SongSheet(['chords' => true]);
+$sheet = new Chordsify\SongSheet();
 $sheet->debug = FALSE;
 
 /*

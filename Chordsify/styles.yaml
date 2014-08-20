@@ -47,6 +47,7 @@ center:
     title:
         font: PTS75F.ttf # bold
         fontSize: 12
+        lineOffset: 7
 
 left:
     align: L
@@ -65,4 +66,4 @@ left:
     title:
         font: PTS75F.ttf # bold
         fontSize: 12
-        lineOffset: 9
+        lineOffset: 7

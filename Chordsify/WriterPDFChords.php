@@ -55,7 +55,7 @@ class WriterPDFChords extends Writer
     {
         $this->pdf->setFontStretching(100);
         $this->setStyle('title');
-        $this->writeText($this->x, $this->y + $this->style['lineOffset'], $song->title);
+        $this->writeCell($this->x, $this->y + $this->style['lineOffset'], $song->title);
         $this->pdf->setFontStretching($this->options['condensing']);
         $this->moveY($this->style['lineHeight']);
     }
@@ -287,6 +287,7 @@ class WriterPDFChords extends Writer
             ['width'=>0.4, 'dash'=>$dash ]);
     }
 
+    // Note: writeText only writes left-aligned
     public function writeText($x, $y, $text) {
         $this->pdf->Text(
             /*                 x */ $this->left + $x,
@@ -303,6 +304,25 @@ class WriterPDFChords extends Writer
             /*           stretch */ 0,
             /* ignore_min_height */ true,
             /*            calign */ 'L'    // align to font baseline
+        );
+    }
+
+    public function writeCell($x, $y, $text)
+    {
+        $this->pdf->SetY($this->top + $y);
+        $this->pdf->SetX($this->left + $x);
+        $this->pdf->Cell(
+            0,                     // width
+            0,                     // height
+            $text,                 // text
+            0,                     // border
+            0,                     // cursor after
+            $this->style['align'], // align
+            false,                 // fill
+            '',                    // link
+            1,                     // stretch
+            true,                  // ignore min-height
+            'L'                    // align cell to font baseline
         );
     }
 }

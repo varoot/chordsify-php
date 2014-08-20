@@ -3,5 +3,5 @@ namespace Chordsify;
 
 class WriterPDFVirtual extends WriterPDF
 {
-    public function writeText($x, $y, $text) {}
+    public function writeCell($x, $y, $text) {}
 }
