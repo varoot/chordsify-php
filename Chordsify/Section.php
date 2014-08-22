@@ -3,6 +3,7 @@ namespace Chordsify;
 
 class Section extends Unit
 {
+    public $hasChords = false;
     public $type = '';
     public $number = 0;
 
@@ -14,7 +15,9 @@ class Section extends Unit
         $data = array_filter(preg_split('/(\s*\n){2}/', $raw));
 
         foreach ($data as $p) {
-            $this->children[] = new Paragraph(trim($p), $this);
+            $p = new Paragraph(trim($p), $this);
+            $this->children[] = $p;
+            $this->hasChords |= $p->hasChords;
         }
 
         return $this;

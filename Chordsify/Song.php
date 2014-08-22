@@ -11,6 +11,7 @@ class Song extends Unit
 
     // Object hash
     public $hash;
+    public $hasChords = false;
 
     public function parse($raw = '', array $options = [])
     {
@@ -29,10 +30,12 @@ class Song extends Unit
             if ($i==0 and trim($data[$i]) == '')
                 continue;
 
-            $this->children[] = new Section($data[$i], $this, [
+            $s = new Section($data[$i], $this, [
                 'type' => $i > 0 ? $data[$i-2] : null,
                 'number' => $i > 0 ? $data[$i-1] : null,
             ]);
+            $this->children[] = $s;
+            $this->hasChords |= $s->hasChords;
         }
 
         return $this;
