@@ -23,7 +23,7 @@ class WriterText extends Writer
     public function section(Section $section, array $paragraphs)
     {
         $output = '';
-        if ($this->options['sections'])
+        if ($this->options['sections'] and ! empty($section->type))
         {
             $output = '['.$section->type.($section->number > 0 ? ' '.$section->number : '')."]\n";
         }
