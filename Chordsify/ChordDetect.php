@@ -147,6 +147,11 @@ class ChordDetect
     {
         list($songChords, $firstChords) = self::collectChords($song);
 
+        // Cannot detect key if there's no chord
+        if (count($songChords) == 0) {
+            return null;
+        }
+
         $chordPercentages = self::percentageArray($songChords);
         $firstCounts = self::countArray($firstChords);
 
