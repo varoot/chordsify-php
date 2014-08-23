@@ -17,7 +17,7 @@ class Song extends Unit
     {
         $this->hash = spl_object_hash($this);
 
-        $options = array_merge(['originalKey'=>NULL, 'title'=>'', 'id'=>''], $options);
+        $options = array_merge(['originalKey'=>null, 'title'=>'', 'id'=>''], $options);
 
         $this->originalKey = new Key($options['originalKey']);
         $this->title = $options['title'];
@@ -38,12 +38,50 @@ class Song extends Unit
             $this->hasChords |= $s->hasChords;
         }
 
+        if ($this->originalKey->value() === null and $options['originalKey'] == 'auto') {
+            $this->detectKey(true);
+        }
+
         return $this;
     }
 
-    public function originalKey()
+    public function detectKey($setKey = false)
     {
-        return $this->originalKey;
+        $key = ChordDetect::detectKey($this);
+        if ($setKey) {
+            $this->originalKey($key);
+        }
+        return $key;
+    }
+
+    // Getter and setter
+    public function originalKey($key = null)
+    {
+        if ($key == null) {
+            return $this->originalKey;
+        }
+
+        $this->originalKey = new Key($key);
+
+        // Re-calculate relative value for chords
+        foreach ($this->children() as $section) {
+            if ( ! $section->hasChords) continue;
+            foreach ($section->children() as $paragraph) {
+                if ( ! $paragraph->hasChords) continue;
+                foreach ($paragraph->children() as $line) {
+                    foreach ($line->children() as $word) {
+                        foreach ($word->children() as $chunk) {
+                            $children = $chunk->children();
+                            if ( ! empty($children['chord'])) {
+                                $children['chord']->calculateRelativeValue();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return $this;
     }
 
     public function transpose($targetKey)

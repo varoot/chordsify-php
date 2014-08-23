@@ -3,7 +3,15 @@ namespace Chordsify;
 
 class Chord extends Unit
 {
-    public $mainRoot;
+    const UNKNOWN = -1;
+    const MAJOR = 0;
+    const MINOR = 1;
+    const SUSTAINED = 2;
+    const AUGMENTED = 3;
+    const DIMINISHED = 4;
+
+    protected $mainRoot;
+    protected $type;
 
     public function parse($raw = '', array $options = [])
     {
@@ -17,6 +25,25 @@ class Chord extends Unit
                 $root = new ChordRoot($data[$i-1], $this);
                 if ( ! isset($this->mainRoot)) {
                     $this->mainRoot = $root;
+                    preg_match('/^(m|min|maj|Maj|M|aug|\+|dim|sus)/', $data[$i], $types);
+                    if (count($types) == 0) {
+                        $this->type = self::MAJOR;
+                    } else {
+                        if ($types[0] == 'M' or $types[0] == 'maj' or $types[0] == 'Maj') {
+                            $this->type = self::MAJOR;
+                        } elseif ($types[0] == 'm' or $types[0] == 'min') {
+                            $this->type = self::MINOR;
+                        } elseif ($types[0] == 'sus') {
+                            $this->type = self::SUSTAINED;
+                        } elseif ($types[0] == 'aug' or $types[0] == '+') {
+                            $this->type = self::AUGMENTED;
+                        } elseif ($types[0] == 'dim') {
+                            $this->type = self::DIMINISHED;
+                        } else {
+                            // It shouldn't get here though
+                            $this->type = self::UNKNOWN;
+                        }
+                    }
                 }
 
                 $this->children[] = $root;
@@ -28,5 +55,23 @@ class Chord extends Unit
         }
 
         return $this;
+    }
+
+    public function calculateRelativeValue()
+    {
+        if ($this->mainRoot) {
+            $this->mainRoot->calculateRelativeValue();
+        }
+        return $this;
+    }
+
+    public function value()
+    {
+        return $this->mainRoot->value();
+    }
+
+    public function type()
+    {
+        return $this->type;
     }
 }

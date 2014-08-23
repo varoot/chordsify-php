@@ -104,11 +104,7 @@ class WriterHTML extends Writer
 
     public function chord(Chord $chord, array $chordElements)
     {
-        $data = [];
-
-        if ($chord->mainRoot) {
-            $data['chord'] = Key::value($chord->mainRoot->root);
-        }
+        $data = ['chord' = $chord->value()];
 
         return self::element(
             'chordAnchor',
@@ -121,7 +117,7 @@ class WriterHTML extends Writer
         return self::element(
             'chordRoot',
             $chordRoot->formattedText(),
-            [ 'chordRel' => $chordRoot->relativeRoot ]
+            [ 'chordRel' => $chordRoot->relativeValue() ]
         );
     }
 

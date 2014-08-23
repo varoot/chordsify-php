@@ -10,7 +10,7 @@ class Chunk extends Unit
     {
         $this->children['lyrics'] = new Lyrics($raw, $this);
 
-        if ( ! empty($options['chord'])) {
+        if ( ! empty($options['chord']) and trim($options['chord']) != '') {
             $this->children['chord'] = new Chord($options['chord'], $this);
         }
 

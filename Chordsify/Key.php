@@ -17,7 +17,7 @@ class Key
     ];
     protected $value = null;
 
-    public static function value($k)
+    public static function filter_value($k)
     {
         if (is_null($k))
             return null;
@@ -25,7 +25,7 @@ class Key
         if (is_numeric($k))
             return (int) $k % 12;
 
-        if (is_object($k) and get_class($k) == __CLASS__)
+        if (is_object($k) and ($k instanceof self))
             return $k->value;
 
         $k = ucwords(trim($k));
@@ -37,8 +37,16 @@ class Key
         return null;
     }
 
+    public function value()
+    {
+        return $this->value;
+    }
+
     public function text($flat = false)
     {
+        if ($this->value === null) {
+            return '';
+        }
         $keys = $flat ? self::$flatKeys : self::$sharpKeys;
         return $keys[$this->value];
     }
@@ -50,7 +58,7 @@ class Key
 
     public function set($k)
     {
-        $k = self::value($k);
+        $k = self::filter_value($k);
         $this->value = $k;
 
         return $this;
