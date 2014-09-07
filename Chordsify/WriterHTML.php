@@ -104,7 +104,7 @@ class WriterHTML extends Writer
 
     public function chord(Chord $chord, array $chordElements)
     {
-        $data = ['chord' = $chord->value()];
+        $data = ['chord' => $chord->value()];
 
         return self::element(
             'chordAnchor',

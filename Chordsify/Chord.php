@@ -67,7 +67,11 @@ class Chord extends Unit
 
     public function value()
     {
-        return $this->mainRoot->value();
+        if ($this->mainRoot) {
+            return $this->mainRoot->value();
+        } else {
+            return null;
+        }
     }
 
     public function type()
