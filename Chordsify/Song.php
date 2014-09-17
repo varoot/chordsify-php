@@ -86,7 +86,7 @@ class Song extends Unit
 
     public function transpose($targetKey)
     {
-        $targetKey = Key::value($targetKey);
+        $targetKey = Key::filter_value($targetKey);
         return parent::transpose($targetKey);
     }
 
