@@ -78,7 +78,9 @@ class SongSheet
         $pdf->SetMargins($this->gutter, 0);
 
         // Only embed characters in used
-        $pdf->setFontSubsetting(true);
+
+        // Turns out we cannot use font-subsetting since it causes problems to some printers (See chrisjbaik/psalted #19)
+        $pdf->setFontSubsetting(false);
 
         $this->pdf = $pdf;
     }

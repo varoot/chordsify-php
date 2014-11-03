@@ -47,7 +47,19 @@ trait PDFStyle
             $font = $this->addFont($font);
         }
 
-        $this->pdf()->SetFont($font, '', $size);
+        $style = substr($font, -1);
+        if ($style == 'b' or $style == 'i') {
+            if (substr($font, -2) == 'bi') {
+                $style = 'bi';
+                $font = substr($font, 0, -2);
+            } else {
+                $font = substr($font, 0, -1);
+            }
+        } else {
+            $style = '';
+        }
+
+        $this->pdf()->SetFont($font, $style, $size);
 
         return $this;
     }
