@@ -71,6 +71,7 @@ class WriterPDF extends Writer
     }
 
     public function song(Song $song, array $sections) {
+        $sections = array_filter($sections);
         $output = null;
 
         foreach ($sections as $s) {
@@ -130,6 +131,12 @@ class WriterPDF extends Writer
     }
 
     public function section(Section $section, array $paragraphs) {
+        $paragraphs = array_filter($paragraphs);
+
+        if (empty($paragraphs)) {
+            return null;
+        }
+
         $output = array_fill(0, $this->maxCollapse+1, [ 'width' => 0, 'height' => 0 ]);
         $output[0]['width']  = max(array_column($paragraphs, 'width'));
         $output[0]['height'] = array_sum(array_column($paragraphs, 'height'));
@@ -163,6 +170,10 @@ class WriterPDF extends Writer
 
     public function initParagraph(Paragraph $paragraph)
     {
+        if ($paragraph->chordsOnly) {
+            return false;
+        }
+
         if ($this->firstParagraph) {
             $this->firstParagraph = false;
         } else {
@@ -172,6 +183,11 @@ class WriterPDF extends Writer
 
     public function paragraph(Paragraph $paragraph, array $lines) {
         $lines = array_filter($lines);
+
+        if (empty($lines)) {
+            return null;
+        }
+
         $width = 0;
 
         foreach ($lines as $text) {

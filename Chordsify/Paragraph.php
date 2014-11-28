@@ -5,6 +5,9 @@ class Paragraph extends Unit
 {
     public $hasChords = true;
     public $collapse;
+    
+    // whether this paragraph contains only chords
+    public $chordsOnly = true;
 
     public function parse($raw = '', array $options = [])
     {
@@ -15,7 +18,9 @@ class Paragraph extends Unit
         $data = preg_split('/\n/', $raw);
 
         foreach ($data as $l) {
-            $this->children[] = new Line($l, $this);
+            $line = new Line($l, $this);
+            $this->children[] = $line;
+            $this->chordsOnly &= $line->chordsOnly;
         }
 
         return $this;
